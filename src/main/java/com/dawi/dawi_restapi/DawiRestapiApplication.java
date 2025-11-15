@@ -1,13 +1,13 @@
-package com.dawi.sistema_solar_restapi;
+package com.dawi.dawi_restapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SistemaSolarRestapiApplication {
+public class DawiRestapiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SistemaSolarRestapiApplication.class, args);
+		SpringApplication.run(DawiRestapiApplication.class, args);
 	}
 
 }

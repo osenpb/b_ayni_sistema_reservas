@@ -1,10 +1,10 @@
-package com.dawi.sistema_solar_restapi;
+package com.dawi.dawi_restapi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SistemaSolarRestapiApplicationTests {
+class DawiRestapiApplicationTests {
 
 	@Test
 	void contextLoads() {

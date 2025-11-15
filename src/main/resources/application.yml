@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: "sistema_solar_restapi"
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/dawiapp?useSSL=false&serverTimezone=UTC
+    username: root
+    password: mysql
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  output:
+    ansi:
+      enabled: always
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+application:
+  security:
+    jwt:
+      secret-key: 9a8b7c6d5e4f3g2h1i0j9k8l7m6n5o4p3q2r1s0t
+      expiration: 30 # en la config serán 30 minutos
+      refresh-expiration: 300
