@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
             String token = tokenService.generateToken(authentication);
 
             return Map.of(
-                    "token", token
+                    "access-token", token
             );
 
         } catch (BadCredentialsException e) {

@@ -2,12 +2,18 @@ package com.dawi.dawi_restapi.auth.infraestructure.controllers;
 
 
 import com.dawi.dawi_restapi.auth.domain.services.AuthService;
+import com.dawi.dawi_restapi.auth.domain.services.TokenService;
 import com.dawi.dawi_restapi.auth.infraestructure.dtos.LoginRequestDTO;
 import com.dawi.dawi_restapi.auth.infraestructure.dtos.RegisterRequestDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -18,9 +24,11 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+    private final AuthenticationManager authenticationManager;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, AuthenticationManager authenticationManager) {
         this.authService = authService;
+        this.authenticationManager = authenticationManager;
     }
 
 
@@ -33,13 +41,19 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String,String>> login(@RequestBody LoginRequestDTO loginRequestDTO) {
-
-        log.info("Email recibido: {}", loginRequestDTO.email());
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO) {
 
         try{
             final Map<String, String> tokens = authService.login(loginRequestDTO);
-            log.info("Tokens generados correctamente");
+//            ResponseCookie cookie = ResponseCookie.from("access-token", tokens.get("access-token"))
+//                    .httpOnly(true)
+//                    .secure(true)
+//                    .sameSite("Strict")
+//                    .path("/")
+//                    .maxAge(60*60)
+//                    .build();
+
+
             return ResponseEntity.ok(tokens);
 
         } catch (BadCredentialsException e) {

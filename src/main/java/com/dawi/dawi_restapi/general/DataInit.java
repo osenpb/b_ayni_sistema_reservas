@@ -17,8 +17,8 @@ public class DataInit implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if(roleRepository.findAll().isEmpty()) {
-            Role roleAdmin = new Role(null, "administrador");
-            Role roleClient = new Role(null, "cliente");
+                Role roleAdmin = new Role(null, "ADMIN");
+            Role roleClient = new Role(null, "CLIENT");
 
             roleRepository.save(roleAdmin);
             roleRepository.save(roleClient);
