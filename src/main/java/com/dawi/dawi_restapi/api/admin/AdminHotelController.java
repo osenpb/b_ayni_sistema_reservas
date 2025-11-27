@@ -33,7 +33,7 @@ public class AdminHotelController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HotelResponse> obtener(@PathVariable Long id) {
+    public ResponseEntity<HotelResponse> buscarPorId(@PathVariable Long id) {
 
         return ResponseEntity.ok( hotelService.buscarPorId(id));
     }
@@ -46,8 +46,7 @@ public class AdminHotelController {
 
     // REVISAR METODO, PROBLEMAS DE LOGICA
     @PutMapping("/{id}")
-    public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody HotelRequest hotelRequest) {
-
+    public ResponseEntity<Boolean> actualizar(@PathVariable Long id, @RequestBody HotelRequest hotelRequest) {
         return ResponseEntity.ok(hotelService.actualizar(id, hotelRequest));
     }
 

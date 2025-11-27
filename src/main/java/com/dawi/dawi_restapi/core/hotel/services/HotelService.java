@@ -10,8 +10,10 @@ import com.dawi.dawi_restapi.core.hotel.repositories.HotelRepository;
 import com.dawi.dawi_restapi.core.tipoHabitacion.model.TipoHabitacion;
 import com.dawi.dawi_restapi.core.tipoHabitacion.service.TipoHabitacionService;
 import com.dawi.dawi_restapi.helpers.mappers.HotelMapper;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +44,7 @@ public class HotelService {
         return hotelRepository.save(hotel);
     }
 
+    @Transactional
     public boolean actualizar(Long id, HotelRequest hotelRequest) {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Hotel no encontrado"));
@@ -55,9 +58,8 @@ public class HotelService {
         hotel.setDepartamento(departamento);
 
         // Limpiar habitaciones existentes
-        hotel.getHabitaciones().clear();
+        hotel.getHabitaciones().clear(); // esto esta x ver
 
-        // Crear habitaciones según el request
         List<Habitacion> nuevasHabitaciones = hotelRequest.habitaciones().stream().map(habReq -> {
             Habitacion hab = new Habitacion();
             hab.setHotel(hotel);
