@@ -1,6 +1,6 @@
 package com.dawi.dawi_restapi.auth.infraestructure.dtos;
 
-public record RegisterRequestDTO(
+public record RegisterRequest(
 
         String username,
 

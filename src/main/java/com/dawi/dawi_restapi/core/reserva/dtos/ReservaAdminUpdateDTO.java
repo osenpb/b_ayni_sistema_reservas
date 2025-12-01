@@ -1,6 +1,6 @@
 package com.dawi.dawi_restapi.core.reserva.dtos;
 
-import com.dawi.dawi_restapi.core.cliente.dtos.ClienteDTO;
+import com.dawi.dawi_restapi.core.cliente.dtos.ClienteRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,7 +10,7 @@ public record ReservaAdminUpdateDTO(
         LocalDate fechaFin,
         String estado,
         Long hotelId,
-        ClienteDTO cliente,
+        ClienteRequest cliente,
         List<Long> habitaciones
 ) {
 }

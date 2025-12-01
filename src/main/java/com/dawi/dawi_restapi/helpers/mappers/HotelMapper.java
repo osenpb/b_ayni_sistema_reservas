@@ -11,7 +11,8 @@ public class HotelMapper {
                 hotel.getNombre(),
                 hotel.getDireccion(),
                 hotel.getDepartamento(),
-                hotel.getHabitaciones().stream().map(HabitacionMapper::toDTO).toList()
+                hotel.getHabitaciones().stream().map(HabitacionMapper::toDTO).toList(),
+                hotel.getImagenUrl()
         );
     }
 

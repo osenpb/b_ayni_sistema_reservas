@@ -7,8 +7,8 @@ import com.dawi.dawi_restapi.auth.domain.repositories.RoleRepository;
 import com.dawi.dawi_restapi.auth.domain.repositories.UserRepository;
 import com.dawi.dawi_restapi.auth.domain.services.AuthService;
 import com.dawi.dawi_restapi.auth.domain.services.TokenService;
-import com.dawi.dawi_restapi.auth.infraestructure.dtos.LoginRequestDTO;
-import com.dawi.dawi_restapi.auth.infraestructure.dtos.RegisterRequestDTO;
+import com.dawi.dawi_restapi.auth.infraestructure.dtos.LoginRequest;
+import com.dawi.dawi_restapi.auth.infraestructure.dtos.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,7 +36,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     private final RoleRepository roleRepository;
 
     @Override
-    public Map<String, String> login(LoginRequestDTO loginRequestDTO) {
+    public Map<String, String> login(LoginRequest loginRequestDTO) {
         try {
             final AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
             final Authentication authRequest = AuthMapper.fromDto(loginRequestDTO);
@@ -76,7 +76,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     }
 
     @Override
-    public void createUser(RegisterRequestDTO createUserDto) {
+    public void createUser(RegisterRequest createUserDto) {
         Role roleClient = roleRepository.findById(2L).orElseThrow();
 
 

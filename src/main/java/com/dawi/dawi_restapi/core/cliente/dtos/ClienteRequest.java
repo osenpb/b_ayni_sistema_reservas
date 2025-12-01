@@ -3,7 +3,7 @@ package com.dawi.dawi_restapi.core.cliente.dtos;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public record ClienteDTO(
+public record ClienteRequest(
         @NotBlank
         String dni,
 
@@ -14,7 +14,9 @@ public record ClienteDTO(
         String apellido,
 
         @Email
-        String correo
-        // tal vez requiera el ID, pero ya lo agregamos si es necesario
+        String email,
+
+        String telefono
+
 ) {
 }

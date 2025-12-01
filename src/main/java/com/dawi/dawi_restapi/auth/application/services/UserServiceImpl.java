@@ -4,7 +4,7 @@ import com.dawi.dawi_restapi.auth.application.mappers.AuthMapper;
 import com.dawi.dawi_restapi.auth.domain.models.User;
 import com.dawi.dawi_restapi.auth.domain.repositories.UserRepository;
 import com.dawi.dawi_restapi.auth.domain.services.UserService;
-import com.dawi.dawi_restapi.auth.infraestructure.dtos.UserResponseDTO;
+import com.dawi.dawi_restapi.auth.infraestructure.dtos.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +18,10 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public List<UserResponseDTO> findAll() {
+    public List<UserResponse> findAll() {
         List<User> userList = userRepository.findAll();
 
-        List<UserResponseDTO> userResponseDTOList = userList.stream()
+        List<UserResponse> userResponseDTOList = userList.stream()
                                                         .map(AuthMapper::toDto).toList();
 
         return userResponseDTOList;
@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO save(User user) {
+    public UserResponse save(User user) {
         return null;
     }
 

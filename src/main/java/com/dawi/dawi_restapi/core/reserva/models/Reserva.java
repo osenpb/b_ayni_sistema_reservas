@@ -1,9 +1,9 @@
 package com.dawi.dawi_restapi.core.reserva.models;
 
 import com.dawi.dawi_restapi.core.cliente.model.Cliente;
+import com.dawi.dawi_restapi.core.detalle_reserva.model.DetalleReserva;
 import com.dawi.dawi_restapi.core.hotel.model.Hotel;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

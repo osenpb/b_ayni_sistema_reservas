@@ -9,7 +9,8 @@ public record HotelRequest(
         String nombre,
         String direccion,
         Long departamentoId,
-        List<HabitacionRequest> habitaciones
+        List<HabitacionRequest> habitaciones,
+        String imagenUrl
         ) {
 
 }

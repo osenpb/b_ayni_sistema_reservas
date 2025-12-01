@@ -25,11 +25,13 @@ public class Hotel {
 
     @ManyToOne
     @JoinColumn(name = "departamento_id")
-    //@JsonIgnore
+
     private Departamento departamento;
 
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Habitacion> habitaciones;
+
+    private String imagenUrl;
 
     public double getPrecioMinimo() {
         if (habitaciones == null || habitaciones.isEmpty()) {

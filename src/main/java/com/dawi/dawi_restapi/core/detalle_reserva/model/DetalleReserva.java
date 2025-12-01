@@ -1,7 +1,8 @@
-package com.dawi.dawi_restapi.core.reserva.models;
+package com.dawi.dawi_restapi.core.detalle_reserva.model;
 
 
 import com.dawi.dawi_restapi.core.habitacion.models.Habitacion;
+import com.dawi.dawi_restapi.core.reserva.models.Reserva;
 import jakarta.persistence.*;
 import lombok.*;
 

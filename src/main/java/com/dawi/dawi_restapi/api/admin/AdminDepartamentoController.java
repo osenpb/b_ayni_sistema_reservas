@@ -30,11 +30,12 @@ public class AdminDepartamentoController {
         return ResponseEntity.ok(departamentoService.guardar(dep));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody Departamento dep) {
-        dep.setId(id);
-        return ResponseEntity.ok(departamentoService.guardar(dep));
-    }
+    // POR REVISAR
+//    @PutMapping("/{id}")
+//    public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody Departamento dep) {
+//
+//        return ResponseEntity.ok(departamentoService.guardar(dep));
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Long id) {

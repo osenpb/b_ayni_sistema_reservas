@@ -11,6 +11,7 @@ public record HotelResponse(
         String nombre,
         String direccion,
         Departamento departamento,
-        List<HabitacionResponse> habitaciones
+        List<HabitacionResponse> habitaciones,
+        String imagenUrl
 ) {
 }

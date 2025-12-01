@@ -3,13 +3,15 @@ package com.dawi.dawi_restapi.helpers.mappers;
 import com.dawi.dawi_restapi.core.habitacion.dtos.HabitacionResponse;
 import com.dawi.dawi_restapi.core.habitacion.models.Habitacion;
 
+
+
 public class HabitacionMapper {
 
     private HabitacionMapper() {
         throw new UnsupportedOperationException("Esta clase no debe ser instanciada");
     }
 
-    public static HabitacionResponse toDTO(HabitacionResponse habitacion) {
+    public static HabitacionResponse toDTO(Habitacion habitacion) {
         if (habitacion == null) {
             return null;
         }
@@ -20,7 +22,7 @@ public class HabitacionMapper {
                 habitacion.getEstado(),
                 habitacion.getPrecio(),
                 habitacion.getTipoHabitacion(),
-                habitacion.getHotel() != null ? habitacion.getHotel().getId() : null
+                habitacion.getHotel().getId()
         );
     }
 

@@ -1,6 +1,6 @@
 package com.dawi.dawi_restapi.core.reserva.dtos;
 
-import com.dawi.dawi_restapi.core.cliente.dtos.ClienteDTO;
+import com.dawi.dawi_restapi.core.cliente.dtos.ClienteRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 public record ReservaRequest(
         LocalDate fechaInicio,
         LocalDate fechaFin,
-        List<Long> habitacionesIds,
-        ClienteDTO cliente
+        ClienteRequest cliente,
+        List<Long> habitacionesIds
 ) {
 }

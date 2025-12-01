@@ -6,7 +6,7 @@ import com.dawi.dawi_restapi.core.cliente.service.ClienteService;
 import com.dawi.dawi_restapi.core.reserva.dtos.ReservaAdminUpdateDTO;
 import com.dawi.dawi_restapi.core.habitacion.models.Habitacion;
 import com.dawi.dawi_restapi.core.habitacion.service.HabitacionService;
-import com.dawi.dawi_restapi.core.reserva.models.DetalleReserva;
+import com.dawi.dawi_restapi.core.detalle_reserva.model.DetalleReserva;
 import com.dawi.dawi_restapi.core.reserva.models.Reserva;
 import com.dawi.dawi_restapi.core.reserva.services.ReservaService;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +48,9 @@ public class AdminReservaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+
+
+
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizar(
             @PathVariable Long id,
@@ -63,7 +66,7 @@ public class AdminReservaController {
         Cliente cliente = reserva.getCliente();
         cliente.setNombre(dto.cliente().nombre());
         cliente.setApellido(dto.cliente().apellido());
-        cliente.setEmail(dto.cliente().correo());
+        cliente.setEmail(dto.cliente().email());
         cliente.setDni(dto.cliente().dni());
         clienteService.guardar(cliente);
 
@@ -85,5 +88,8 @@ public class AdminReservaController {
         reserva.setTotal(total);
         return ResponseEntity.ok(reservaService.guardar(reserva));
     }
+
+
+
 
 }

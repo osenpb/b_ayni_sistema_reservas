@@ -5,6 +5,7 @@ import com.dawi.dawi_restapi.core.hotel.dtos.HotelResponse;
 import com.dawi.dawi_restapi.core.hotel.dtos.HotelRequest;
 import com.dawi.dawi_restapi.core.departamento.service.DepartamentoService;
 import com.dawi.dawi_restapi.core.hotel.services.HotelService;
+import com.dawi.dawi_restapi.helpers.mappers.HotelMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,9 @@ public class AdminHotelController {
     @GetMapping("/{id}")
     public ResponseEntity<HotelResponse> buscarPorId(@PathVariable Long id) {
 
-        return ResponseEntity.ok( hotelService.buscarPorId(id));
+        HotelResponse hotelResponse = HotelMapper.toDTO(hotelService.buscarPorId(id));
+
+        return ResponseEntity.ok(hotelResponse);
     }
 
     @PostMapping

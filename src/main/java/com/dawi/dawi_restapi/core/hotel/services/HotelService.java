@@ -45,7 +45,7 @@ public class HotelService {
         hotel.setNombre(hotelRequest.nombre());
         hotel.setDireccion(hotelRequest.direccion());
         hotel.setDepartamento(departamento);
-
+        hotel.setImagenUrl(hotelRequest.imagenUrl());
         return hotelRepository.save(hotel);
     }
 
@@ -83,10 +83,10 @@ public class HotelService {
         return true;
     }
 
-    public HotelResponse buscarPorId(Long id) {
+    public Hotel buscarPorId(Long id) {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Hotel no encontrado"));
-        return HotelMapper.toDTO(hotel);
+        return hotel;
     }
 
     public void eliminar(Long id) {
@@ -103,13 +103,13 @@ public class HotelService {
     public List<HabitacionResponse> obtenerHabitacionesDisponibles(
             Long hotelId, LocalDate fechaInicio, LocalDate fechaFin) {
 
-        HotelResponse hotelResponse = this.buscarPorId(hotelId);
+        Hotel hotel = this.buscarPorId(hotelId);
+
+        HotelResponse hotelResponse = HotelMapper.toDTO(hotel);
 
         return hotelResponse.habitaciones().stream()
                 .filter(h -> "DISPONIBLE".equals(h.estado()))
                 .filter(h -> habitacionService.estaDisponible(h.id(), fechaInicio, fechaFin))
-                .map(HabitacionMapper::toDTO)
                 .toList();
     }
-
 }
