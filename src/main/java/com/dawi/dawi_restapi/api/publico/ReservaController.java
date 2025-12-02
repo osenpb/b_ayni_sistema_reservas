@@ -83,9 +83,17 @@ public class ReservaController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
 
-        List<HabitacionResponse> habitacionesDisponibles = hotelService.obtenerHabitacionesDisponibles(id,fechaInicio, fechaFin);
+        Hotel hotel = hotelService.buscarPorId(id);
+        List<HabitacionResponse> habitacionesDisponibles = hotelService.obtenerHabitacionesDisponibles(id, fechaInicio, fechaFin);
 
-            return ResponseEntity.ok(habitacionesDisponibles);
+        return ResponseEntity.ok(Map.of(
+                "hotelId", id,
+                "hotelNombre", hotel.getNombre(),
+                "fechaInicio", fechaInicio.toString(),
+                "fechaFin", fechaFin.toString(),
+                "habitacionesDisponibles", habitacionesDisponibles,
+                "cantidad", habitacionesDisponibles.size()
+        ));
     }
 
     /**
@@ -96,11 +104,11 @@ public class ReservaController {
             @PathVariable Long id,
             @RequestBody @Valid ReservaRequest dto) {
 
-        reservaService.reservarHabitaciones(id, dto);
+        Reserva reserva = reservaService.reservarHabitaciones(id, dto);
 
-        // x mientras
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                "mensaje", "Reserva creada con éxito"
+                "mensaje", "Reserva creada con éxito",
+                "id", reserva.getId()
         ));
     }
 

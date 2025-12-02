@@ -7,13 +7,14 @@ import com.dawi.dawi_restapi.core.cliente.model.Cliente;
 public class ClienteMapper {
 
     public static ClienteResponse toResponse(Cliente cliente) {
+        // ClienteResponse: (id, nombre, apellido, email, telefono, documento)
         return new ClienteResponse(
                 cliente.getId(),
-                cliente.getDni(),
                 cliente.getNombre(),
                 cliente.getApellido(),
                 cliente.getEmail(),
-                cliente.getTelefono()
+                cliente.getTelefono(),
+                cliente.getDni()
         );
     }
 
