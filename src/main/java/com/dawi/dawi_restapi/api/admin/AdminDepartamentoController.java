@@ -30,12 +30,16 @@ public class AdminDepartamentoController {
         return ResponseEntity.ok(departamentoService.guardar(dep));
     }
 
-    // POR REVISAR
-//    @PutMapping("/{id}")
-//    public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody Departamento dep) {
-//
-//        return ResponseEntity.ok(departamentoService.guardar(dep));
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody Departamento dep) {
+        return departamentoService.buscarPorId(id)
+                .map(existente -> {
+                    existente.setNombre(dep.getNombre());
+                    existente.setDetalle(dep.getDetalle());
+                    return ResponseEntity.ok(departamentoService.guardar(existente));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Long id) {

@@ -1,6 +1,6 @@
 ---- =============================================
 ---- OSWALDO, ANTES DE REGISTRARTE INSERTA AL ADMIN, Y
------ Y TOODO SCRIPT QUE TENES ACA, LA CLAVE DEL ADMIN HA ESTA HARCODEADA
+----- Y TODO SCRIPT QUE TENES ACA, LA CLAVE DEL ADMIN HA ESTA HARCODEADA
 ----- TAL VEZ DUERMA HASTA TARDE XD NO TE RINDAS HERMNO
 ---- =============================================
 

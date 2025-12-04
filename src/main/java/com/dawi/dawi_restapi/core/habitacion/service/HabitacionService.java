@@ -19,8 +19,9 @@ public class HabitacionService {
 
     private final HabitacionRepository habitacionRepository;
 
-
-
+    public long contarTodas() {
+        return habitacionRepository.count();
+    }
 
     public Optional<Habitacion> buscarPorId(Long id) {
         return habitacionRepository.findById(id);

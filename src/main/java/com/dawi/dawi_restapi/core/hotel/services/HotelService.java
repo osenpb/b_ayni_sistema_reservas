@@ -99,6 +99,10 @@ public class HotelService {
         return hoteles.stream().map(HotelMapper::toDTO).toList();
     }
 
+    public List<Hotel> listarTodos() {
+        return hotelRepository.findAll();
+    }
+
 
     // esto podria ponerlo en ReservaService, pero x ahora lo dejo aqui
     public List<HabitacionResponse> obtenerHabitacionesDisponibles(

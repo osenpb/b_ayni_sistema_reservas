@@ -52,6 +52,10 @@ public class ReservaService {
         return reservaRepository.findAll();
     }
 
+    public List<Reserva> listarTodas() {
+        return reservaRepository.findAll();
+    }
+
     public Optional<Reserva> buscarPorId(Long id) {
         return reservaRepository.findById(id);
     }
@@ -119,14 +123,19 @@ public class ReservaService {
             cliente.setNombre(dto.nombre());
             cliente.setApellido(dto.apellido());
             cliente.setEmail(dto.email());
-            if (dto.telefono() != null) {
+            if (dto.telefono() != null && !dto.telefono().isBlank()) {
                 cliente.setTelefono(dto.telefono());
             }
             return clienteRepository.save(cliente);
         }
 
         // Crear nuevo cliente
-        Cliente nuevo = ClienteMapper.toCliente(dto);
+        Cliente nuevo = new Cliente();
+        nuevo.setNombre(dto.nombre());
+        nuevo.setApellido(dto.apellido());
+        nuevo.setDni(dto.dni());
+        nuevo.setEmail(dto.email());
+        nuevo.setTelefono(dto.telefono() != null && !dto.telefono().isBlank() ? dto.telefono() : "");
         return clienteRepository.save(nuevo);
     }
 
