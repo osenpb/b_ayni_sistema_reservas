@@ -1,4 +1,4 @@
-# OsenShop 🛒
+# Ayni - Sistema de reservas
 
 Ayni es una aplicación de reserva de hospedajes en distintos hoteles afiliados en territorio peruano. El backend fue desarrollado con Java 21 y Spring Boot, enfocado en buenas prácticas de arquitectura, seguridad y diseño.
 
