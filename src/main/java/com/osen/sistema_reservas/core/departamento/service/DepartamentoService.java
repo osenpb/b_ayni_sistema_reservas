@@ -4,17 +4,19 @@ import com.osen.sistema_reservas.core.departamento.dtos.DepartamentoRequest;
 import com.osen.sistema_reservas.core.departamento.model.Departamento;
 import com.osen.sistema_reservas.core.departamento.repository.DepartamentoRepository;
 import com.osen.sistema_reservas.helpers.exceptions.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class DepartamentoService {
 
     private final DepartamentoRepository departamentoRepository;
+
+    public DepartamentoService(DepartamentoRepository departamentoRepository) {
+        this.departamentoRepository = departamentoRepository;
+    }
 
     public List<Departamento> listar() {
         return departamentoRepository.findAll();
@@ -22,7 +24,7 @@ public class DepartamentoService {
 
     public Departamento buscarPorId(Long id) {
         return departamentoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Departamento", id));
+                .orElseThrow(() -> new EntityNotFoundException("Departamento " + id));
     }
 
     public Optional<Departamento> buscarPorIdOptional(Long id) {
@@ -53,7 +55,7 @@ public class DepartamentoService {
 
     public void eliminar(Long depId) {
         if (!departamentoRepository.existsById(depId)) {
-            throw new EntityNotFoundException("Departamento", depId);
+            throw new EntityNotFoundException("Departamento" + depId);
         }
         departamentoRepository.deleteById(depId);
     }

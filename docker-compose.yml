@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: sistema-reservas-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: sistema_reservas
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_password
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqldata:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  backend:
+    build: .
+    container_name: sistema-reservas-backend
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_URL=jdbc:mysql://mysql:3306/sistema_reservas?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - DB_USERNAME=app_user
+      - DB_PASSWORD=app_password
+      - JWT_SECRET=9a8b7c6d5e4f3g2h1i0j9k8l7m6n5o4p3q2r1s0t
+      - JWT_EXPIRATION=86400000
+    restart: unless-stopped
+
+volumes:
+  mysqldata:

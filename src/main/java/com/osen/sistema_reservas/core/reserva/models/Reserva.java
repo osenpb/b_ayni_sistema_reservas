@@ -4,17 +4,12 @@ import com.osen.sistema_reservas.core.cliente.model.Cliente;
 import com.osen.sistema_reservas.core.detalle_reserva.model.DetalleReserva;
 import com.osen.sistema_reservas.core.hotel.model.Hotel;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Reserva {
 
@@ -44,4 +39,89 @@ public class Reserva {
         this.detalles.add(detalle);
     }
 
+    public Reserva() {    }
+
+    public Reserva(Long id, LocalDate fechaReserva, LocalDate fechaInicio, LocalDate fechaFin, double total, String estado, Cliente cliente, List<DetalleReserva> detalles, Hotel hotel) {
+        this.id = id;
+        this.fechaReserva = fechaReserva;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.total = total;
+        this.estado = estado;
+        this.cliente = cliente;
+        this.detalles = detalles;
+        this.hotel = hotel;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public LocalDate getFechaReserva() {
+        return fechaReserva;
+    }
+
+    public void setFechaReserva(LocalDate fechaReserva) {
+        this.fechaReserva = fechaReserva;
+    }
+
+    public LocalDate getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(LocalDate fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public LocalDate getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(LocalDate fechaFin) {
+        this.fechaFin = fechaFin;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public List<DetalleReserva> getDetalles() {
+        return detalles;
+    }
+
+    public void setDetalles(List<DetalleReserva> detalles) {
+        this.detalles = detalles;
+    }
+
+    public Hotel getHotel() {
+        return hotel;
+    }
+
+    public void setHotel(Hotel hotel) {
+        this.hotel = hotel;
+    }
 }

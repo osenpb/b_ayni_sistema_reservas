@@ -5,16 +5,18 @@ import com.osen.sistema_reservas.core.cliente.dtos.ClienteRequest;
 import com.osen.sistema_reservas.core.cliente.model.Cliente;
 import com.osen.sistema_reservas.core.cliente.repository.ClienteRepository;
 import com.osen.sistema_reservas.helpers.exceptions.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
+
+    public ClienteService(ClienteRepository clienteRepository) {
+        this.clienteRepository = clienteRepository;
+    }
 
     public Cliente guardar(Cliente cliente) {
         return clienteRepository.save(cliente);
@@ -22,7 +24,7 @@ public class ClienteService {
 
     public Cliente buscarPorDni(String dni) {
         return clienteRepository.findByDni(dni)
-                .orElseThrow(() -> new EntityNotFoundException("Cliente", dni));
+                .orElseThrow(() -> new EntityNotFoundException("Cliente con DNI " + dni));
     }
 
     public Optional<Cliente> buscarPorDniOptional(String dni) {
@@ -31,7 +33,7 @@ public class ClienteService {
 
     public Cliente buscarPorId(Long id) {
         return clienteRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Cliente", id));
+                .orElseThrow(() -> new EntityNotFoundException("Cliente con ID: " + id));
     }
 
     public Optional<Cliente> buscarPorUserId(Long userId) {

@@ -10,8 +10,8 @@ import com.osen.sistema_reservas.auth.domain.services.TokenService;
 import com.osen.sistema_reservas.auth.infraestructure.dtos.LoginRequest;
 import com.osen.sistema_reservas.auth.infraestructure.dtos.RegisterRequest;
 import com.osen.sistema_reservas.helpers.exceptions.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -25,8 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-@Slf4j
-@RequiredArgsConstructor
+
 @Service
 public class AuthServiceImpl implements AuthService, UserDetailsService {
 
@@ -35,6 +34,16 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final RoleRepository roleRepository;
+
+    private final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
+
+    public AuthServiceImpl(UserRepository userRepository, TokenService tokenService, PasswordEncoder passwordEncoder, AuthenticationConfiguration authenticationConfiguration, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.tokenService = tokenService;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationConfiguration = authenticationConfiguration;
+        this.roleRepository = roleRepository;
+    }
 
     @Override
     public Map<String, String> login(LoginRequest loginRequestDTO) {
@@ -79,7 +88,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     @Override
     public void createUser(RegisterRequest createUserDto) {
         Role roleClient = roleRepository.findById(2L)
-                .orElseThrow(() -> new EntityNotFoundException("Role", 2L));
+                .orElseThrow(() -> new EntityNotFoundException("Role:" + 2L));
 
 
         final User createUser = AuthMapper.fromDto(createUserDto);

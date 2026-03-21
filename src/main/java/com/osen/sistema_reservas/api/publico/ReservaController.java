@@ -37,13 +37,19 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/public/reserva")
-@RequiredArgsConstructor
 public class ReservaController {
 
     private final DepartamentoService departamentoService;
     private final HotelService hotelService;
     private final ReservaService reservaService;
     private final ClienteService clienteService;
+
+    public ReservaController(DepartamentoService departamentoService, HotelService hotelService, ReservaService reservaService, ClienteService clienteService) {
+        this.departamentoService = departamentoService;
+        this.hotelService = hotelService;
+        this.reservaService = reservaService;
+        this.clienteService = clienteService;
+    }
 
     // ==================== DEPARTAMENTOS ====================
 

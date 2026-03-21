@@ -5,9 +5,8 @@
 INSERT IGNORE INTO roles (role_id, rolename) VALUES (1, 'ADMIN');
 INSERT IGNORE INTO roles (role_id, rolename) VALUES (2, 'USER');
 
-INSERT IGNORE INTO users (id, username, email, password, role_id, telefono, activo, fecha_creacion)
+INSERT IGNORE INTO users (username, email, password, role_id, telefono, activo, fecha_creacion)
 VALUES (
-    1,
     'Administrador',
     'admin@hotel.com',
     '$2a$12$LhRqC4i8zzzS6QkVP.KtduVbOVeRjcYoi30Aq14J6V1ixfPbPaTre',
@@ -16,6 +15,18 @@ VALUES (
     TRUE,
     NOW()
 );
+
+INSERT IGNORE INTO users (username, email, password, role_id, telefono, activo, fecha_creacion)
+VALUES (
+    'usuario',
+    'usuario@usuario.com',
+    '$2a$12$69h4r0/I/9P0Ve34F0VlRe3SNJKPrszGBarBte3YAm/yo/T6URy2K',
+    1,
+    '999999999',
+    TRUE,
+    NOW()
+);
+
 
 -- =====================================================
 -- DEPARTAMENTOS

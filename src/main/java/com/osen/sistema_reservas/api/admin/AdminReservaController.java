@@ -18,10 +18,13 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin/reservas")
-@RequiredArgsConstructor
 public class AdminReservaController {
 
     private final ReservaService reservaService;
+
+    public AdminReservaController(ReservaService reservaService) {
+        this.reservaService = reservaService;
+    }
 
     /**
      * Lista todas las reservas

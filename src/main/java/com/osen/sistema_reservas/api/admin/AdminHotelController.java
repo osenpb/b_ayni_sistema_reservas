@@ -20,10 +20,13 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin/hoteles")
-@RequiredArgsConstructor
 public class AdminHotelController {
 
     private final HotelService hotelService;
+
+    public AdminHotelController(HotelService hotelService) {
+        this.hotelService = hotelService;
+    }
 
     /**
      * Lista todos los hoteles

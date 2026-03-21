@@ -22,11 +22,15 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/public/habitaciones")
-@RequiredArgsConstructor
 public class HabitacionConsultaController {
 
     private final HabitacionService habitacionService;
     private final TipoHabitacionService tipoHabitacionService;
+
+    public HabitacionConsultaController(HabitacionService habitacionService, TipoHabitacionService tipoHabitacionService) {
+        this.habitacionService = habitacionService;
+        this.tipoHabitacionService = tipoHabitacionService;
+    }
 
     /**
      * Verifica disponibilidad de habitaciones en un hotel para un rango de fechas

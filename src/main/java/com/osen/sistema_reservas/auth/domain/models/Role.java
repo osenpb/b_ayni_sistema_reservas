@@ -6,9 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
 @Entity
 @Table(name = "roles")
 public class Role {
@@ -21,4 +18,27 @@ public class Role {
     @Column(nullable = false)
     private String rolename;
 
+    public Role() {
+    }
+
+    public Role(Long roleId, String rolename) {
+        this.roleId = roleId;
+        this.rolename = rolename;
+    }
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getRolename() {
+        return rolename;
+    }
+
+    public void setRolename(String rolename) {
+        this.rolename = rolename;
+    }
 }

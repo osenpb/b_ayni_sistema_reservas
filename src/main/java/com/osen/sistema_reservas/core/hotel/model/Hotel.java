@@ -11,9 +11,6 @@ import java.util.List;
 
 @Entity
 @Builder
-@Getter @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Hotel {
 
     @Id
@@ -48,4 +45,63 @@ public class Hotel {
         return habitaciones.size();
     }
 
+    public Hotel() {
+    }
+
+    public Hotel(Long id, String nombre, String direccion, Departamento departamento, List<Habitacion> habitaciones, String imagenUrl) {
+        this.id = id;
+        this.nombre = nombre;
+        this.direccion = direccion;
+        this.departamento = departamento;
+        this.habitaciones = habitaciones;
+        this.imagenUrl = imagenUrl;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public Departamento getDepartamento() {
+        return departamento;
+    }
+
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
+    }
+
+    public List<Habitacion> getHabitaciones() {
+        return habitaciones;
+    }
+
+    public void setHabitaciones(List<Habitacion> habitaciones) {
+        this.habitaciones = habitaciones;
+    }
+
+    public String getImagenUrl() {
+        return imagenUrl;
+    }
+
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
+    }
 }

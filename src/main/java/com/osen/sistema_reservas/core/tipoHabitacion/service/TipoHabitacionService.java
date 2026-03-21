@@ -9,10 +9,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class TipoHabitacionService {
 
     private final TipoHabitacionRepository tipoHabitacionRepository;
+
+    public TipoHabitacionService(TipoHabitacionRepository tipoHabitacionRepository) {
+        this.tipoHabitacionRepository = tipoHabitacionRepository;
+    }
 
     public List<TipoHabitacion> listar() {
         return tipoHabitacionRepository.findAll();
@@ -20,6 +23,6 @@ public class TipoHabitacionService {
 
     public TipoHabitacion buscarPorId(Long id) {
         return tipoHabitacionRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("TipoHabitacion", id));
+                .orElseThrow(() -> new EntityNotFoundException("TipoHabitacion con ID: " + id));
     }
 }

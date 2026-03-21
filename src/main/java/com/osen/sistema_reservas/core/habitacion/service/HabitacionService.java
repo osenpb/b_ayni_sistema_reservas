@@ -3,7 +3,6 @@ package com.osen.sistema_reservas.core.habitacion.service;
 import com.osen.sistema_reservas.core.habitacion.models.Habitacion;
 import com.osen.sistema_reservas.core.habitacion.repository.HabitacionRepository;
 import com.osen.sistema_reservas.helpers.exceptions.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -11,10 +10,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class HabitacionService {
 
     private final HabitacionRepository habitacionRepository;
+
+    public HabitacionService(HabitacionRepository habitacionRepository) {
+        this.habitacionRepository = habitacionRepository;
+    }
 
     public long contarTodas() {
         return habitacionRepository.count();
@@ -22,7 +24,7 @@ public class HabitacionService {
 
     public Habitacion buscarPorId(Long id) {
         return habitacionRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Habitacion", id));
+                .orElseThrow(() -> new EntityNotFoundException("Habitacion " + id));
     }
 
     public Optional<Habitacion> buscarPorIdOptional(Long id) {
@@ -39,7 +41,7 @@ public class HabitacionService {
 
     public void eliminarPorId(Long id) {
         if (!habitacionRepository.existsById(id)) {
-            throw new EntityNotFoundException("Habitacion", id);
+            throw new EntityNotFoundException("Habitacion " + id);
         }
         habitacionRepository.deleteById(id);
     }

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ReservaMapper {
 
-static ReservaResponse toDTO(Reserva reserva) {
+    public static ReservaResponse toDTO(Reserva reserva) {
         List<DetalleReservaResponse> detalles = reserva.getDetalles().stream()
                 .map(det -> new DetalleReservaResponse(
                         det.getId(),

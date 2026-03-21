@@ -22,13 +22,19 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class HotelService {
 
     private final HotelRepository hotelRepository;
     private final DepartamentoService departamentoService;
     private final TipoHabitacionService tipoHabitacionService;
     private final HabitacionService habitacionService;
+
+    public HotelService(HotelRepository hotelRepository, DepartamentoService departamentoService, TipoHabitacionService tipoHabitacionService, HabitacionService habitacionService) {
+        this.hotelRepository = hotelRepository;
+        this.departamentoService = departamentoService;
+        this.tipoHabitacionService = tipoHabitacionService;
+        this.habitacionService = habitacionService;
+    }
 
     // ==================== CONSULTAS ====================
 
@@ -48,7 +54,7 @@ public class HotelService {
 
     public Hotel buscarPorId(Long id) {
         return hotelRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Hotel", id));
+                .orElseThrow(() -> new EntityNotFoundException("Hotel con ID " + id));
     }
 
     public HotelResponse buscarPorIdResponse(Long id) {
@@ -99,7 +105,7 @@ public class HotelService {
     @Transactional
     public void eliminar(Long id) {
         if (!hotelRepository.existsById(id)) {
-            throw new EntityNotFoundException("Hotel", id);
+            throw new EntityNotFoundException("Hotel con ID " + id);
         }
         hotelRepository.deleteById(id);
     }

@@ -17,13 +17,19 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class DashboardService {
 
     private final DepartamentoService departamentoService;
     private final HotelService hotelService;
     private final HabitacionService habitacionService;
     private final ReservaService reservaService;
+
+    public DashboardService(DepartamentoService departamentoService, HotelService hotelService, HabitacionService habitacionService, ReservaService reservaService) {
+        this.departamentoService = departamentoService;
+        this.hotelService = hotelService;
+        this.habitacionService = habitacionService;
+        this.reservaService = reservaService;
+    }
 
     public DashboardStatsResponse obtenerEstadisticas() {
         List<Departamento> departamentos = departamentoService.listar();

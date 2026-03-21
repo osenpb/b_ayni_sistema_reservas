@@ -8,9 +8,6 @@ import lombok.*;
 
 
 @Entity
-@Getter @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class DetalleReserva {
 
     @Id
@@ -27,4 +24,44 @@ public class DetalleReserva {
     @JoinColumn(name = "habitacion_id")
     private Habitacion habitacion;
 
+    public DetalleReserva() {  }
+
+    public DetalleReserva(Long id, double precioNoche, Reserva reserva, Habitacion habitacion) {
+        this.id = id;
+        this.precioNoche = precioNoche;
+        this.reserva = reserva;
+        this.habitacion = habitacion;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public double getPrecioNoche() {
+        return precioNoche;
+    }
+
+    public void setPrecioNoche(double precioNoche) {
+        this.precioNoche = precioNoche;
+    }
+
+    public Reserva getReserva() {
+        return reserva;
+    }
+
+    public void setReserva(Reserva reserva) {
+        this.reserva = reserva;
+    }
+
+    public Habitacion getHabitacion() {
+        return habitacion;
+    }
+
+    public void setHabitacion(Habitacion habitacion) {
+        this.habitacion = habitacion;
+    }
 }

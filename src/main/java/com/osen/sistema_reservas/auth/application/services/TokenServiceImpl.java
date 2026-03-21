@@ -18,8 +18,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 
 
-@Slf4j
-@RequiredArgsConstructor
 @Service
 public class TokenServiceImpl implements TokenService {
 
@@ -34,8 +32,13 @@ public class TokenServiceImpl implements TokenService {
 
     private final JwtEncoder jwtEncoder;
     private final JwtDecoder jwtDecoder;
-
     private final UserRepository userRepository;
+
+    public TokenServiceImpl(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder, UserRepository userRepository) {
+        this.jwtEncoder = jwtEncoder;
+        this.jwtDecoder = jwtDecoder;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public String generateToken(Authentication authentication) {

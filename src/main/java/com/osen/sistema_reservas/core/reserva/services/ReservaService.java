@@ -17,7 +17,6 @@ import com.osen.sistema_reservas.helpers.exceptions.ConflictException;
 import com.osen.sistema_reservas.helpers.exceptions.EntityNotFoundException;
 import com.osen.sistema_reservas.helpers.exceptions.ValidationException;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,13 +24,20 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+
 public class ReservaService {
 
     private final ReservaRepository reservaRepository;
     private final ClienteService clienteService;
     private final HotelService hotelService;
     private final HabitacionService habitacionService;
+
+    public ReservaService(ReservaRepository reservaRepository, ClienteService clienteService, HotelService hotelService, HabitacionService habitacionService) {
+        this.reservaRepository = reservaRepository;
+        this.clienteService = clienteService;
+        this.hotelService = hotelService;
+        this.habitacionService = habitacionService;
+    }
 
     // ==================== CONSULTAS ====================
 
@@ -45,7 +51,7 @@ public class ReservaService {
 
     public Reserva buscarPorId(Long id) {
         return reservaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Reserva", id));
+                .orElseThrow(() -> new EntityNotFoundException("Reserva con ID:" + id));
     }
 
     public List<Reserva> buscarReservasPorDniCliente(String dni) {
@@ -65,7 +71,7 @@ public class ReservaService {
     @Transactional
     public void eliminar(Long id) {
         if (!reservaRepository.existsById(id)) {
-            throw new EntityNotFoundException("Reserva", id);
+            throw new EntityNotFoundException("Reserva con ID:" + id);
         }
         reservaRepository.deleteById(id);
     }

@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/admin/dashboard")
-@RequiredArgsConstructor
 public class AdminDashboardController {
 
     private final DashboardService dashboardService;
+
+    public AdminDashboardController(DashboardService dashboardService) {
+        this.dashboardService = dashboardService;
+    }
 
     /**
      * Obtiene las estadísticas del dashboard

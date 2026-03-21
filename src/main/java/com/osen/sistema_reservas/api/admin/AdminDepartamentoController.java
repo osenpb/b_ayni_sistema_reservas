@@ -16,10 +16,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/departamentos")
-@RequiredArgsConstructor
 public class AdminDepartamentoController {
 
     private final DepartamentoService departamentoService;
+
+    public AdminDepartamentoController(DepartamentoService departamentoService) {
+        this.departamentoService = departamentoService;
+    }
 
     /**
      * Lista todos los departamentos

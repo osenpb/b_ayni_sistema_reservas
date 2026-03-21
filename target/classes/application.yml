@@ -3,9 +3,9 @@ spring:
     name: "sistema_reservas"
 
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${DB_URL:jdbc:mysql://localhost:3306/dawiapp}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:mysql}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   output:
@@ -13,11 +13,11 @@ spring:
       enabled: always
 
   jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
     show-sql: true
     defer-datasource-initialization: true
-
   sql:
     init:
       mode: always
@@ -26,7 +26,6 @@ spring:
 application:
   security:
     jwt:
-      secret-key: ${JWT_SECRET}
-      expiration: 60
+      secret-key: ${JWT_SECRET:9a8b7c6d5e4f3g2h1i0j9k8l7m6n5o4p3q2r1s0t}
+      expiration: 130
       refresh-expiration: 300
-

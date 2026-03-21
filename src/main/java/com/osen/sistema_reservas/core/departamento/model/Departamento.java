@@ -12,9 +12,6 @@ import java.util.List;
 
 
 @Entity
-@Getter @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Departamento {
 
     @Id
@@ -29,5 +26,45 @@ public class Departamento {
     @JsonIgnore
     private List<Hotel> hoteles;
 
+    public Departamento() {
+    }
 
+    public Departamento(Long id, String nombre, String detalle, List<Hotel> hoteles) {
+        this.id = id;
+        this.nombre = nombre;
+        this.detalle = detalle;
+        this.hoteles = hoteles;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getDetalle() {
+        return detalle;
+    }
+
+    public void setDetalle(String detalle) {
+        this.detalle = detalle;
+    }
+
+    public List<Hotel> getHoteles() {
+        return hoteles;
+    }
+
+    public void setHoteles(List<Hotel> hoteles) {
+        this.hoteles = hoteles;
+    }
 }

@@ -10,8 +10,8 @@ import com.osen.sistema_reservas.auth.infraestructure.dtos.LoginRequest;
 import com.osen.sistema_reservas.auth.infraestructure.dtos.RegisterRequest;
 import com.osen.sistema_reservas.auth.infraestructure.dtos.UserResponse;
 import com.osen.sistema_reservas.helpers.exceptions.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,15 +21,23 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@Slf4j
+
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
+
+    private final Logger log = LoggerFactory.getLogger(AuthController.class);
+
 
     private final AuthService authService;
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
+
+    public AuthController(AuthService authService, AuthenticationManager authenticationManager, UserService userService) {
+        this.authService = authService;
+        this.authenticationManager = authenticationManager;
+        this.userService = userService;
+    }
 
 
     @PostMapping("/register")
@@ -76,7 +84,7 @@ public class AuthController {
 
 
             User myUser = userService.findByEmail(user.getEmail())
-                    .orElseThrow(() -> new EntityNotFoundException("User not found with user {}", user.getEmail() ));
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with user" + user.getEmail() ));
 
             UserResponse userResponse = AuthMapper.toDto(user);
             return ResponseEntity.ok(userResponse);
