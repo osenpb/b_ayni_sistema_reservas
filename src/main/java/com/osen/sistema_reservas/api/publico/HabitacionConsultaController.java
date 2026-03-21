@@ -1,11 +1,11 @@
 package com.osen.sistema_reservas.api.publico;
 
-import com.osen.sistema_reservas.core.habitacion.dtos.HabitacionDisponibilidadDTO;
-import com.osen.sistema_reservas.core.habitacion.service.HabitacionService;
-import com.osen.sistema_reservas.core.tipoHabitacion.dtos.TipoHabitacionResponse;
-import com.osen.sistema_reservas.core.tipoHabitacion.model.TipoHabitacion;
-import com.osen.sistema_reservas.core.tipoHabitacion.service.TipoHabitacionService;
-import com.osen.sistema_reservas.helpers.mappers.TipoHabitacionMapper;
+import com.osen.sistema_reservas.core.habitacion.application.dtos.HabitacionDisponibilidadDTO;
+import com.osen.sistema_reservas.core.habitacion.application.service.HabitacionService;
+import com.osen.sistema_reservas.core.tipoHabitacion.application.dtos.TipoHabitacionResponse;
+import com.osen.sistema_reservas.core.tipoHabitacion.domain.model.TipoHabitacion;
+import com.osen.sistema_reservas.core.tipoHabitacion.application.service.TipoHabitacionService;
+import com.osen.sistema_reservas.shared.helpers.mappers.TipoHabitacionMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,6 @@
 package com.osen.sistema_reservas.auth.infraestructure.filters;
 
-import com.osen.sistema_reservas.auth.domain.services.AuthService;
+import com.osen.sistema_reservas.auth.domain.port.in.AuthService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

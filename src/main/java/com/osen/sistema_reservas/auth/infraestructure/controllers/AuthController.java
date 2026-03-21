@@ -2,14 +2,15 @@ package com.osen.sistema_reservas.auth.infraestructure.controllers;
 
 
 import com.osen.sistema_reservas.auth.application.mappers.AuthMapper;
-import com.osen.sistema_reservas.auth.domain.models.User;
-import com.osen.sistema_reservas.auth.domain.services.AuthService;
-import com.osen.sistema_reservas.auth.domain.services.UserService;
+import com.osen.sistema_reservas.auth.domain.model.User;
+import com.osen.sistema_reservas.auth.domain.port.in.AuthService;
+import com.osen.sistema_reservas.auth.domain.port.in.UserService;
 import com.osen.sistema_reservas.auth.infraestructure.dtos.AuthResponse;
 import com.osen.sistema_reservas.auth.infraestructure.dtos.LoginRequest;
 import com.osen.sistema_reservas.auth.infraestructure.dtos.RegisterRequest;
 import com.osen.sistema_reservas.auth.infraestructure.dtos.UserResponse;
-import com.osen.sistema_reservas.helpers.exceptions.EntityNotFoundException;
+import com.osen.sistema_reservas.shared.helpers.exceptions.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -41,7 +42,7 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> createUser(@RequestBody RegisterRequest createUserDto) {
+    public ResponseEntity<AuthResponse> createUser(@RequestBody @Valid RegisterRequest createUserDto) {
         // 1. Crear el usuario
         authService.createUser(createUserDto);
 
@@ -59,7 +60,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequestDTO) {
+    public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginRequest loginRequestDTO) {
 
         try{
             final Map<String, String> token = authService.login(loginRequestDTO);

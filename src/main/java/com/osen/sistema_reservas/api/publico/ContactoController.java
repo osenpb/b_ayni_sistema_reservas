@@ -1,15 +1,17 @@
 package com.osen.sistema_reservas.api.publico;
 
-
+import com.osen.sistema_reservas.shared.helpers.dtos.MessageResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/public/contacto")
+@RestController
+@RequestMapping("/public/contacto")
 public class ContactoController {
-    @GetMapping("/contacto")
-    public String mostrarContacto() {
 
-        //aqui no se que poner D:
-        return "usuario/contacto";
+    @GetMapping
+    public ResponseEntity<MessageResponse> mostrarContacto() {
+        return ResponseEntity.ok(MessageResponse.of("Información de contacto disponible"));
     }
 }

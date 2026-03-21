@@ -1,9 +1,9 @@
 package com.osen.sistema_reservas.auth.application.services;
 
-import com.osen.sistema_reservas.auth.domain.models.User;
-import com.osen.sistema_reservas.auth.domain.repositories.UserRepository;
-import com.osen.sistema_reservas.auth.domain.services.TokenService;
-import com.osen.sistema_reservas.helpers.exceptions.TokenExpiredException;
+import com.osen.sistema_reservas.auth.domain.model.User;
+import com.osen.sistema_reservas.auth.domain.port.out.UserRepository;
+import com.osen.sistema_reservas.auth.domain.port.in.TokenService;
+import com.osen.sistema_reservas.shared.helpers.exceptions.TokenExpiredException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

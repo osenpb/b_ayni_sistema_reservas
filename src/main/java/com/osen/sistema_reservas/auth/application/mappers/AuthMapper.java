@@ -1,7 +1,7 @@
 package com.osen.sistema_reservas.auth.application.mappers;
 
-import com.osen.sistema_reservas.auth.domain.models.Role;
-import com.osen.sistema_reservas.auth.domain.models.User;
+import com.osen.sistema_reservas.auth.domain.model.Role;
+import com.osen.sistema_reservas.auth.domain.model.User;
 import com.osen.sistema_reservas.auth.infraestructure.dtos.LoginRequest;
 import com.osen.sistema_reservas.auth.infraestructure.dtos.RegisterRequest;
 import com.osen.sistema_reservas.auth.infraestructure.dtos.UserResponse;

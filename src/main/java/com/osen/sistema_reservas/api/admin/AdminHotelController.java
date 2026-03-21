@@ -1,11 +1,11 @@
 package com.osen.sistema_reservas.api.admin;
 
-import com.osen.sistema_reservas.core.hotel.dtos.HotelRequest;
-import com.osen.sistema_reservas.core.hotel.dtos.HotelResponse;
-import com.osen.sistema_reservas.core.hotel.model.Hotel;
-import com.osen.sistema_reservas.core.hotel.services.HotelService;
-import com.osen.sistema_reservas.helpers.dtos.MessageResponse;
-import com.osen.sistema_reservas.helpers.mappers.HotelMapper;
+import com.osen.sistema_reservas.core.hotel.application.dtos.HotelRequest;
+import com.osen.sistema_reservas.core.hotel.application.dtos.HotelResponse;
+import com.osen.sistema_reservas.core.hotel.domain.model.Hotel;
+import com.osen.sistema_reservas.core.hotel.application.service.HotelService;
+import com.osen.sistema_reservas.shared.helpers.dtos.MessageResponse;
+import com.osen.sistema_reservas.shared.helpers.mappers.HotelMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -60,8 +60,7 @@ public class AdminHotelController {
      */
     @PostMapping
     public ResponseEntity<HotelResponse> crear(@RequestBody @Valid HotelRequest hotelRequest) {
-        Hotel hotel = hotelService.guardar(hotelRequest);
-        HotelResponse response = HotelMapper.toDTO(hotel);
+        HotelResponse response = hotelService.guardarResponse(hotelRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -73,8 +72,7 @@ public class AdminHotelController {
             @PathVariable Long id,
             @RequestBody @Valid HotelRequest hotelRequest) {
 
-        Hotel hotel = hotelService.actualizar(id, hotelRequest);
-        HotelResponse response = HotelMapper.toDTO(hotel);
+        HotelResponse response = hotelService.actualizarResponse(id, hotelRequest);
         return ResponseEntity.ok(response);
     }
 

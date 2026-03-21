@@ -1,11 +1,12 @@
 package com.osen.sistema_reservas.api.admin;
 
-import com.osen.sistema_reservas.core.reserva.dtos.ReservaAdminUpdateDTO;
-import com.osen.sistema_reservas.core.reserva.dtos.ReservaListResponse;
-import com.osen.sistema_reservas.core.reserva.models.Reserva;
-import com.osen.sistema_reservas.core.reserva.services.ReservaService;
-import com.osen.sistema_reservas.helpers.dtos.MessageResponse;
-import com.osen.sistema_reservas.helpers.mappers.ReservaMapper;
+import com.osen.sistema_reservas.core.reserva.application.dtos.ReservaAdminUpdateDTO;
+import com.osen.sistema_reservas.core.reserva.application.dtos.ReservaListResponse;
+import com.osen.sistema_reservas.core.reserva.domain.model.Reserva;
+import com.osen.sistema_reservas.core.reserva.application.service.ReservaService;
+import com.osen.sistema_reservas.shared.helpers.dtos.MessageResponse;
+import com.osen.sistema_reservas.shared.helpers.mappers.ReservaMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +32,7 @@ public class AdminReservaController {
      */
     @GetMapping
     public ResponseEntity<List<ReservaListResponse>> listar() {
-        List<Reserva> reservas = reservaService.listar();
-        List<ReservaListResponse> response = ReservaMapper.toListResponseList(reservas);
+        List<ReservaListResponse> response = reservaService.listarResponse();
         return ResponseEntity.ok(response);
     }
 
@@ -41,8 +41,7 @@ public class AdminReservaController {
      */
     @GetMapping("/buscar")
     public ResponseEntity<List<ReservaListResponse>> buscarPorDni(@RequestParam String dni) {
-        List<Reserva> reservas = reservaService.buscarReservasPorDniCliente(dni);
-        List<ReservaListResponse> response = ReservaMapper.toListResponseList(reservas);
+        List<ReservaListResponse> response = reservaService.buscarReservasPorDniClienteResponse(dni);
         return ResponseEntity.ok(response);
     }
 
@@ -52,8 +51,7 @@ public class AdminReservaController {
     @GetMapping("/{id}")
     public ResponseEntity<ReservaListResponse> obtener(@PathVariable Long id) {
         Reserva reserva = reservaService.buscarPorId(id);
-        ReservaListResponse response = ReservaMapper.toListResponse(reserva);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ReservaMapper.toListResponse(reserva));
     }
 
     /**
@@ -62,11 +60,10 @@ public class AdminReservaController {
     @PutMapping("/{id}")
     public ResponseEntity<ReservaListResponse> actualizar(
             @PathVariable Long id,
-            @RequestBody ReservaAdminUpdateDTO dto) {
+            @RequestBody @Valid ReservaAdminUpdateDTO dto) {
 
         Reserva reservaActualizada = reservaService.actualizarReservaAdmin(id, dto);
-        ReservaListResponse response = ReservaMapper.toListResponse(reservaActualizada);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ReservaMapper.toListResponse(reservaActualizada));
     }
 
     /**

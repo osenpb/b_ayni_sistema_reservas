@@ -1,15 +1,15 @@
 package com.osen.sistema_reservas.auth.application.services;
 
 import com.osen.sistema_reservas.auth.application.mappers.AuthMapper;
-import com.osen.sistema_reservas.auth.domain.models.Role;
-import com.osen.sistema_reservas.auth.domain.models.User;
-import com.osen.sistema_reservas.auth.domain.repositories.RoleRepository;
-import com.osen.sistema_reservas.auth.domain.repositories.UserRepository;
-import com.osen.sistema_reservas.auth.domain.services.AuthService;
-import com.osen.sistema_reservas.auth.domain.services.TokenService;
+import com.osen.sistema_reservas.auth.domain.model.Role;
+import com.osen.sistema_reservas.auth.domain.model.User;
+import com.osen.sistema_reservas.auth.domain.port.out.RoleRepository;
+import com.osen.sistema_reservas.auth.domain.port.out.UserRepository;
+import com.osen.sistema_reservas.auth.domain.port.in.AuthService;
+import com.osen.sistema_reservas.auth.domain.port.in.TokenService;
 import com.osen.sistema_reservas.auth.infraestructure.dtos.LoginRequest;
 import com.osen.sistema_reservas.auth.infraestructure.dtos.RegisterRequest;
-import com.osen.sistema_reservas.helpers.exceptions.EntityNotFoundException;
+import com.osen.sistema_reservas.shared.helpers.exceptions.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
