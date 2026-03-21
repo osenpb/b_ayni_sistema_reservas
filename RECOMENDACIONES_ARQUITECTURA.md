@@ -293,45 +293,31 @@ public class Reserva { ... }
 
 ---
 
-## 🔴 Problemas en Endpoints REST (PENDIENTE)
+## ✅ Problemas en Endpoints REST (CORREGIDO)
 
-### Controllers con problemas
+### Controllers corregidos
 
-#### ReservaController (`/public/reserva`)
+#### ReservaController → separado en 3 controllers
 
-| Endpoint Actual | Problema | Corrección |
-|-----------------|----------|------------|
-| `GET /public/reserva/departamentos` | Departamentos bajo `/reserva` | `GET /public/departamentos` |
-| `GET /public/reserva/hoteles` | Hoteles bajo `/reserva` | `GET /public/hoteles?depId=x` |
-| `GET /public/reserva/hoteles/{id}` | Hoteles bajo `/reserva` | `GET /public/hoteles/{id}` |
-| `POST /public/reserva/hoteles/{id}/reservar` | Verbo en URL + path anidado | `POST /public/reservas` |
-| `GET /public/reserva/reserva/{id}` | Redundancia `/reserva/reserva/` | `GET /public/reservas/{id}` |
-| `GET /public/reserva/mis-reservas` | Mezcla path/query | `GET /public/reservas/mias` |
-| `POST /public/reserva/{id}/confirmar-pago` | Verbo en URL | `PATCH /public/reservas/{id}/pagar` |
-
-**Problema adicional**: Este controller maneja 3 recursos diferentes (departamentos, hoteles, reservas). Debería separarse en 3 controllers.
+| Controller | Path base | Endpoints |
+|-----------|-----------|-----------|
+| `DepartamentoController` | `/public/departamentos` | `GET /`, `GET /{id}` |
+| `HotelController` | `/public/hoteles` | `GET /?departamentoId=x`, `GET /{id}`, `GET /{id}/habitaciones-disponibles` |
+| `ReservaController` | `/public/reservas` | `POST /`, `GET /{id}`, `GET /mias`, `PUT /{id}`, `PATCH /{id}/pagar`, `DELETE /{id}` |
 
 #### AdminReservaController (`/admin/reservas`)
 
-| Endpoint Actual | Problema | Corrección |
-|-----------------|----------|------------|
-| `GET /admin/reservas/buscar?dni=x` | Path `/buscar` innecesario | `GET /admin/reservas?dni=x` |
+| Endpoint | Estado |
+|----------|--------|
+| `GET /admin/reservas?dni=x` | ✅ Sin `/buscar` |
 
 #### AdminHotelController (`/admin/hoteles`)
 
-| Endpoint Actual | Problema | Corrección |
-|-----------------|----------|------------|
-| `GET /admin/hoteles/departamento/{id}` | Filtro como path | `GET /admin/hoteles?departamentoId={id}` |
+| Endpoint | Estado |
+|----------|--------|
+| `GET /admin/hoteles?departamentoId=x` | ✅ Query param en lugar de path |
 
-### Reglas REST violadas
-
-1. **No usar verbos en URLs**: `/reservar`, `/confirmar-pago`, `/buscar`
-2. **Un recurso por controller**: ReservaController maneja 3 recursos
-3. **Usar sustantivos pluralizados**: `/reservas` no `/reserva`
-4. **Filtros como query params**: `?departamentoId=x` no `/departamento/{id}`
-5. **HTTP methods correctos**: `PATCH` para actualizaciones parciales
-
-### Estructura RESTful recomendada
+### Estructura RESTful implementada
 
 ```
 # RECURSO: Departamentos (público)
@@ -380,11 +366,11 @@ GET    /admin/dashboard/stats
 
 ### Tareas de corrección de endpoints
 
-- [ ] Separar ReservaController en 3 controllers: DepartamentoController, HotelController, ReservaController
-- [ ] Renombrar endpoints con verbos a sustantivos
-- [ ] Cambiar filtros de path params a query params
-- [ ] Usar `/reservas` (plural) en lugar de `/reserva`
-- [ ] Usar `PATCH` para confirmar pago
+- [x] Separar ReservaController en 3 controllers: DepartamentoController, HotelController, ReservaController
+- [x] Renombrar endpoints con verbos a sustantivos
+- [x] Cambiar filtros de path params a query params
+- [x] Usar `/reservas` (plural) en lugar de `/reserva`
+- [x] Usar `PATCH` para confirmar pago
 
 ---
 
