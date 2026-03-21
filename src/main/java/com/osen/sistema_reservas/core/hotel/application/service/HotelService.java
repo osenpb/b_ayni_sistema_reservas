@@ -14,6 +14,8 @@ import com.osen.sistema_reservas.core.tipoHabitacion.application.service.TipoHab
 import com.osen.sistema_reservas.shared.helpers.exceptions.EntityNotFoundException;
 import com.osen.sistema_reservas.shared.helpers.exceptions.ValidationException;
 import com.osen.sistema_reservas.shared.helpers.mappers.HotelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +40,7 @@ public class HotelService {
     // ==================== CONSULTAS ====================
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "hoteles", key = "'all'")
     public List<HotelResponse> listarHoteles() {
         return hotelRepository.findAllWithRelations().stream()
                 .map(HotelMapper::toDTO)
@@ -50,6 +53,7 @@ public class HotelService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "hoteles", key = "'dep_' + #departamentoId")
     public List<HotelResponse> listarPorDepartamentoId(Long departamentoId) {
         return hotelRepository.findByDepartamentoIdWithRelations(departamentoId).stream()
                 .map(HotelMapper::toDTO)
@@ -70,6 +74,7 @@ public class HotelService {
     // ==================== OPERACIONES CRUD ====================
 
     @Transactional
+    @CacheEvict(value = "hoteles", allEntries = true)
     public Hotel guardar(HotelRequest hotelRequest) {
         validarHotelRequest(hotelRequest);
         Departamento departamento = departamentoService.buscarPorId(hotelRequest.departamentoId());
@@ -84,11 +89,13 @@ public class HotelService {
     }
 
     @Transactional
+    @CacheEvict(value = "hoteles", allEntries = true)
     public HotelResponse guardarResponse(HotelRequest hotelRequest) {
         return HotelMapper.toDTO(guardar(hotelRequest));
     }
 
     @Transactional
+    @CacheEvict(value = "hoteles", allEntries = true)
     public Hotel actualizar(Long id, HotelRequest hotelRequest) {
         validarHotelRequest(hotelRequest);
 
@@ -111,11 +118,13 @@ public class HotelService {
     }
 
     @Transactional
+    @CacheEvict(value = "hoteles", allEntries = true)
     public HotelResponse actualizarResponse(Long id, HotelRequest hotelRequest) {
         return HotelMapper.toDTO(actualizar(id, hotelRequest));
     }
 
     @Transactional
+    @CacheEvict(value = "hoteles", allEntries = true)
     public void eliminar(Long id) {
         if (!hotelRepository.existsById(id)) {
             throw new EntityNotFoundException("Hotel con ID " + id);

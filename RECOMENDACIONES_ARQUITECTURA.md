@@ -25,6 +25,7 @@ El proyecto ha sido reorganizado bajo una arquitectura hexagonal con validacione
 - [x] `@Transactional(readOnly = true)` en métodos de consulta
 - [x] `open-in-view: false` + `default_batch_fetch_size: 16`
 - [x] DTOs del dashboard refactorizados a records individuales
+- [x] Cache con Caffeine (departamentos, tiposHabitacion, hoteles)
 
 ### ⚠️ Áreas de Mejora Pendientes
 - [ ] Implementación completa del flujo de refresh token
@@ -435,7 +436,7 @@ GET    /admin/dashboard/stats
 - [x] Optimizar consultas JPA (evitar N+1)
 - [x] Agregar índices a entidades
 - [x] DTOs con records individuales (dashboard)
-- [ ] Implementar cache para consultas frecuentes
+- [x] Implementar cache para consultas frecuentes (Caffeine, 10min TTL, 500 max)
 - [ ] Implementar paginación en todos los listados
 - [ ] Agregar logging estructurado
 
@@ -457,6 +458,7 @@ GET    /admin/dashboard/stats
 | Índices JPA | 14 índices | 14 ✅ |
 | Relaciones LAZY | 100% | 100% ✅ |
 | JOIN FETCH en repos | 100% | 100% ✅ |
+| Cache implementado | Caffeine 10min TTL | ✅ |
 | Tiempo de respuesta API | N/A | < 200ms (P95) |
 | Disponibilidad | N/A | > 99.5% |
 
@@ -510,5 +512,5 @@ mvn compile -DskipTests
 ---
 
 *Documento actualizado el: 21 de Marzo de 2026*
-*Versión: 3.2*
+*Versión: 3.3*
 *Progreso: Fase 1, 2, 3 completadas. Fase 4 y 6 en progreso. Fase 5 y 7 pendientes.*
