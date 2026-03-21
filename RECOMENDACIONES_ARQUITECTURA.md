@@ -15,9 +15,12 @@ El proyecto ha sido reorganizado bajo una arquitectura hexagonal con validacione
 - [x] Controllers corregidos (bugs, duplicación, mapeo en services)
 - [x] Excepción `ForbiddenException` creada con handler global
 - [x] `@Valid` agregado en AuthController para Login y Register
+- [x] Endpoints REST corregidos (1 recurso por controller, plural, sustantivos, query params)
+- [x] SecurityConfig corregido (paths alineados con controllers)
+- [x] Perfiles de configuración (dev, test con Testcontainers, prod)
+- [x] Dependencia Testcontainers agregada (MySQL + JUnit Jupiter)
 
 ### ⚠️ Áreas de Mejora Pendientes
-- [ ] Implementación de perfiles de configuración (dev/prod)
 - [ ] Implementación completa del flujo de refresh token
 - [ ] Pruebas unitarias e integración
 - [ ] Logging estructurado
@@ -384,8 +387,8 @@ GET    /admin/dashboard/stats
 
 | Prioridad | Recomendación | Tiempo Estimado | Impacto |
 |-----------|---------------|-----------------|---------|
-| 🔴 Alta | Corregir endpoints REST | 4-6 horas | API consistente |
-| 🔴 Alta | Perfiles de configuración | 2-4 horas | Seguridad |
+| ✅ | Corregir endpoints REST | COMPLETADO | API consistente |
+| ✅ | Perfiles de configuración | COMPLETADO | Seguridad |
 | 🔴 Alta | Refresh Token completo | 8-12 horas | UX/Sesiones |
 | 🔴 Alta | Implementación Testing | 20-40 horas | Mantenibilidad |
 | 🟡 Media | Optimización JPA | 6-10 horas | Performance |
@@ -416,16 +419,17 @@ GET    /admin/dashboard/stats
 - [x] Reorganizar módulo auth
 - [x] Mover helpers a shared/
 
-### ⏳ Fase 3: Endpoints REST (PENDIENTE)
-- [ ] Separar ReservaController en 3 controllers (Departamentos, Hoteles, Reservas)
-- [ ] Renombrar endpoints con verbos a sustantivos
-- [ ] Cambiar filtros de path params a query params
-- [ ] Usar `/reservas` (plural) en lugar de `/reserva`
-- [ ] Usar `PATCH` para confirmar pago
-- [ ] Eliminar path `/buscar` innecesario en AdminReservaController
+### ✅ Fase 3: Endpoints REST (COMPLETADO)
+- [x] Separar ReservaController en 3 controllers (PublicoDepartamentoController, PublicoHotelController, ReservaController)
+- [x] Renombrar endpoints con verbos a sustantivos
+- [x] Cambiar filtros de path params a query params
+- [x] Usar `/reservas` (plural) en lugar de `/reserva`
+- [x] Usar `PATCH` para confirmar pago
+- [x] Eliminar path `/buscar` innecesario en AdminReservaController
+- [x] Corregir SecurityConfig (mismatch `/api` prefix que no existía)
 
-### ⏳ Fase 4: Configuración (PENDIENTE)
-- [ ] Configurar perfiles de aplicación (dev, test, prod)
+### ⏳ Fase 4: Configuración (EN PROGRESO)
+- [x] Configurar perfiles de aplicación (dev, test, prod)
 - [ ] Implementar flujo completo de refresh token
 - [ ] Agregar rate limiting a endpoints de autenticación
 - [ ] Configurar CORS de forma más restrictiva en producción
@@ -471,6 +475,44 @@ GET    /admin/dashboard/stats
 
 ---
 
-*Documento actualizado el: 20 de Marzo de 2026*
-*Versión: 2.1*
-*Progreso: Fase 1 y 2 completadas. Fase 3 (Endpoints REST) documentada para corrección.*
+## 🚀 Instrucciones de Uso
+
+### Perfiles de Configuración
+
+| Perfil | Base de datos | DDL | SQL Init | Uso |
+|--------|--------------|-----|----------|-----|
+| `dev` (default) | MySQL local (`localhost:3306/dawiapp`) | `update` | `always` | Desarrollo local |
+| `prod` | MySQL via `${DATABASE_URL}` | `validate` | `never` | Producción |
+| `test` | MySQL via Testcontainers | `create-drop` | `always` | Tests de integración |
+
+### Comandos
+
+```bash
+# Desarrollo (perfil por defecto)
+mvn spring-boot:run
+
+# Producción
+mvn spring-boot:run -Dspring-boot.run.profiles=prod
+# Requiere variables de entorno: DATABASE_URL, DB_USERNAME, DB_PASSWORD, JWT_SECRET
+
+# Tests (requiere Docker corriendo)
+mvn test
+
+# Compilar sin tests
+mvn compile -DskipTests
+```
+
+### Variables de Entorno (Producción)
+
+| Variable | Descripción | Ejemplo |
+|----------|-------------|---------|
+| `DATABASE_URL` | URL completa de MySQL | `jdbc:mysql://db.host:3306/reservas` |
+| `DB_USERNAME` | Usuario de la base de datos | `admin` |
+| `DB_PASSWORD` | Contraseña | `secret123` |
+| `JWT_SECRET` | Clave secreta JWT (obligatoria en prod) | cadena aleatoria larga |
+
+---
+
+*Documento actualizado el: 21 de Marzo de 2026*
+*Versión: 3.1*
+*Progreso: Fase 1, 2 y 3 completadas. Fase 4 en progreso (perfiles configurados).*

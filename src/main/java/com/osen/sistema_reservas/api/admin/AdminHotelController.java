@@ -7,17 +7,12 @@ import com.osen.sistema_reservas.core.hotel.application.service.HotelService;
 import com.osen.sistema_reservas.shared.helpers.dtos.MessageResponse;
 import com.osen.sistema_reservas.shared.helpers.mappers.HotelMapper;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Controller para administración de hoteles.
- * Solo maneja requests/responses, toda la lógica está en HotelService.
- */
 @RestController
 @RequestMapping("/admin/hoteles")
 public class AdminHotelController {
@@ -28,57 +23,35 @@ public class AdminHotelController {
         this.hotelService = hotelService;
     }
 
-    /**
-     * Lista todos los hoteles
-     */
     @GetMapping
-    public ResponseEntity<List<HotelResponse>> obtenerTodosLosHoteles() {
-        List<HotelResponse> hoteles = hotelService.listarHoteles();
-        return ResponseEntity.ok(hoteles);
+    public ResponseEntity<List<HotelResponse>> listar(
+            @RequestParam(required = false) Long departamentoId) {
+
+        if (departamentoId != null) {
+            return ResponseEntity.ok(hotelService.listarPorDepartamentoId(departamentoId));
+        }
+
+        return ResponseEntity.ok(hotelService.listarHoteles());
     }
 
-    /**
-     * Lista hoteles por departamento
-     */
-    @GetMapping("/departamento/{id}")
-    public ResponseEntity<List<HotelResponse>> listarPorDepartamento(@PathVariable("id") Long depId) {
-        List<HotelResponse> hoteles = hotelService.listarPorDepartamentoId(depId);
-        return ResponseEntity.ok(hoteles);
-    }
-
-    /**
-     * Obtiene un hotel por ID
-     */
     @GetMapping("/{id}")
-    public ResponseEntity<HotelResponse> buscarPorId(@PathVariable Long id) {
-        HotelResponse hotelResponse = hotelService.buscarPorIdResponse(id);
-        return ResponseEntity.ok(hotelResponse);
+    public ResponseEntity<HotelResponse> obtener(@PathVariable Long id) {
+        return ResponseEntity.ok(hotelService.buscarPorIdResponse(id));
     }
 
-    /**
-     * Crea un nuevo hotel
-     */
     @PostMapping
     public ResponseEntity<HotelResponse> crear(@RequestBody @Valid HotelRequest hotelRequest) {
-        HotelResponse response = hotelService.guardarResponse(hotelRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(hotelService.guardarResponse(hotelRequest));
     }
 
-    /**
-     * Actualiza un hotel existente
-     */
     @PutMapping("/{id}")
     public ResponseEntity<HotelResponse> actualizar(
             @PathVariable Long id,
             @RequestBody @Valid HotelRequest hotelRequest) {
 
-        HotelResponse response = hotelService.actualizarResponse(id, hotelRequest);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(hotelService.actualizarResponse(id, hotelRequest));
     }
 
-    /**
-     * Elimina un hotel
-     */
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponse> eliminar(@PathVariable Long id) {
         hotelService.eliminar(id);

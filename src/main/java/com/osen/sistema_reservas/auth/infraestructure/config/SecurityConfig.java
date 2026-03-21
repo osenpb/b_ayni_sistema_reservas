@@ -37,8 +37,14 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/public/**").permitAll()
-                        .requestMatchers("/api/public/reserva/mis-reservas").authenticated()
+                        .requestMatchers("/api/public/departamentos/**").permitAll()
+                        .requestMatchers("/api/public/hoteles/**").permitAll()
+                        .requestMatchers("/api/public/habitaciones/**").permitAll()
+                        .requestMatchers("/api/public/contacto/**").permitAll()
+                        .requestMatchers("/api/public/reservas").permitAll()
+                        .requestMatchers("/api/public/reservas/mias").authenticated()
+                        .requestMatchers("/api/public/reservas/{id:[\\d]+}/pagar").authenticated()
+                        .requestMatchers("/api/public/reservas/{id:[\\d]+}").authenticated()
                         .anyRequest().authenticated()
                 ).addFilterBefore(jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class);;
