@@ -11,27 +11,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "reserva", indexes = {
+    @Index(name = "idx_reserva_cliente", columnList = "cliente_id"),
+    @Index(name = "idx_reserva_hotel", columnList = "hotel_id"),
+    @Index(name = "idx_reserva_fechas", columnList = "fecha_inicio, fecha_fin"),
+    @Index(name = "idx_reserva_estado", columnList = "estado"),
+    @Index(name = "idx_reserva_fecha_reserva", columnList = "fecha_reserva")
+})
 public class Reserva {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private LocalDate fechaReserva;
-    private LocalDate fechaInicio;
-    private LocalDate fechaFin;
-    private double total;
-    private String estado; // EJ: CONFIRMADA, CANCELADA
 
-    @ManyToOne
-    @JoinColumn(name = "cliente_id")
+    @Column(nullable = false)
+    private LocalDate fechaInicio;
+
+    @Column(nullable = false)
+    private LocalDate fechaFin;
+
+    @Column(nullable = false)
+    private double total;
+
+    @Column(nullable = false)
+    private String estado;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
     @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetalleReserva> detalles = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "hotel_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;
 
     public void addDetalle(DetalleReserva detalle) {
@@ -39,7 +55,7 @@ public class Reserva {
         this.detalles.add(detalle);
     }
 
-    public Reserva() {    }
+    public Reserva() { }
 
     public Reserva(Long id, LocalDate fechaReserva, LocalDate fechaInicio, LocalDate fechaFin, double total, String estado, Cliente cliente, List<DetalleReserva> detalles, Hotel hotel) {
         this.id = id;
@@ -53,75 +69,22 @@ public class Reserva {
         this.hotel = hotel;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDate getFechaReserva() {
-        return fechaReserva;
-    }
-
-    public void setFechaReserva(LocalDate fechaReserva) {
-        this.fechaReserva = fechaReserva;
-    }
-
-    public LocalDate getFechaInicio() {
-        return fechaInicio;
-    }
-
-    public void setFechaInicio(LocalDate fechaInicio) {
-        this.fechaInicio = fechaInicio;
-    }
-
-    public LocalDate getFechaFin() {
-        return fechaFin;
-    }
-
-    public void setFechaFin(LocalDate fechaFin) {
-        this.fechaFin = fechaFin;
-    }
-
-    public double getTotal() {
-        return total;
-    }
-
-    public void setTotal(double total) {
-        this.total = total;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public List<DetalleReserva> getDetalles() {
-        return detalles;
-    }
-
-    public void setDetalles(List<DetalleReserva> detalles) {
-        this.detalles = detalles;
-    }
-
-    public Hotel getHotel() {
-        return hotel;
-    }
-
-    public void setHotel(Hotel hotel) {
-        this.hotel = hotel;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public LocalDate getFechaReserva() { return fechaReserva; }
+    public void setFechaReserva(LocalDate fechaReserva) { this.fechaReserva = fechaReserva; }
+    public LocalDate getFechaInicio() { return fechaInicio; }
+    public void setFechaInicio(LocalDate fechaInicio) { this.fechaInicio = fechaInicio; }
+    public LocalDate getFechaFin() { return fechaFin; }
+    public void setFechaFin(LocalDate fechaFin) { this.fechaFin = fechaFin; }
+    public double getTotal() { return total; }
+    public void setTotal(double total) { this.total = total; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+    public Cliente getCliente() { return cliente; }
+    public void setCliente(Cliente cliente) { this.cliente = cliente; }
+    public List<DetalleReserva> getDetalles() { return detalles; }
+    public void setDetalles(List<DetalleReserva> detalles) { this.detalles = detalles; }
+    public Hotel getHotel() { return hotel; }
+    public void setHotel(Hotel hotel) { this.hotel = hotel; }
 }

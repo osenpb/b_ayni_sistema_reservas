@@ -14,7 +14,6 @@ import com.osen.sistema_reservas.core.tipoHabitacion.application.service.TipoHab
 import com.osen.sistema_reservas.shared.helpers.exceptions.EntityNotFoundException;
 import com.osen.sistema_reservas.shared.helpers.exceptions.ValidationException;
 import com.osen.sistema_reservas.shared.helpers.mappers.HotelMapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,28 +37,34 @@ public class HotelService {
 
     // ==================== CONSULTAS ====================
 
+    @Transactional(readOnly = true)
     public List<HotelResponse> listarHoteles() {
-        List<Hotel> hoteles = hotelRepository.findAll();
-        return hoteles.stream().map(HotelMapper::toDTO).toList();
+        return hotelRepository.findAllWithRelations().stream()
+                .map(HotelMapper::toDTO)
+                .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<Hotel> listarTodos() {
-        return hotelRepository.findAll();
+        return hotelRepository.findAllWithRelations();
     }
 
+    @Transactional(readOnly = true)
     public List<HotelResponse> listarPorDepartamentoId(Long departamentoId) {
-        List<Hotel> hoteles = hotelRepository.findByDepartamentoId(departamentoId);
-        return hoteles.stream().map(HotelMapper::toDTO).toList();
+        return hotelRepository.findByDepartamentoIdWithRelations(departamentoId).stream()
+                .map(HotelMapper::toDTO)
+                .toList();
     }
 
+    @Transactional(readOnly = true)
     public Hotel buscarPorId(Long id) {
-        return hotelRepository.findById(id)
+        return hotelRepository.findByIdWithRelations(id)
                 .orElseThrow(() -> new EntityNotFoundException("Hotel con ID " + id));
     }
 
+    @Transactional(readOnly = true)
     public HotelResponse buscarPorIdResponse(Long id) {
-        Hotel hotel = buscarPorId(id);
-        return HotelMapper.toDTO(hotel);
+        return HotelMapper.toDTO(buscarPorId(id));
     }
 
     // ==================== OPERACIONES CRUD ====================
@@ -67,7 +72,6 @@ public class HotelService {
     @Transactional
     public Hotel guardar(HotelRequest hotelRequest) {
         validarHotelRequest(hotelRequest);
-
         Departamento departamento = departamentoService.buscarPorId(hotelRequest.departamentoId());
 
         Hotel hotel = new Hotel();
@@ -81,8 +85,7 @@ public class HotelService {
 
     @Transactional
     public HotelResponse guardarResponse(HotelRequest hotelRequest) {
-        Hotel hotel = guardar(hotelRequest);
-        return HotelMapper.toDTO(hotel);
+        return HotelMapper.toDTO(guardar(hotelRequest));
     }
 
     @Transactional
@@ -100,7 +103,6 @@ public class HotelService {
             hotel.setImagenUrl(hotelRequest.imagenUrl());
         }
 
-        // Actualizar habitaciones si vienen en el request
         if (hotelRequest.habitaciones() != null && !hotelRequest.habitaciones().isEmpty()) {
             actualizarHabitaciones(hotel, hotelRequest);
         }
@@ -110,8 +112,7 @@ public class HotelService {
 
     @Transactional
     public HotelResponse actualizarResponse(Long id, HotelRequest hotelRequest) {
-        Hotel hotel = actualizar(id, hotelRequest);
-        return HotelMapper.toDTO(hotel);
+        return HotelMapper.toDTO(actualizar(id, hotelRequest));
     }
 
     @Transactional
@@ -124,15 +125,19 @@ public class HotelService {
 
     // ==================== HABITACIONES DISPONIBLES ====================
 
+    @Transactional(readOnly = true)
     public List<HabitacionResponse> obtenerHabitacionesDisponibles(
             Long hotelId, LocalDate fechaInicio, LocalDate fechaFin) {
 
-        Hotel hotel = buscarPorId(hotelId);
-        HotelResponse hotelResponse = HotelMapper.toDTO(hotel);
+        List<Habitacion> habitaciones = habitacionService.buscarDisponiblesPorHotelId(hotelId);
 
-        return hotelResponse.habitaciones().stream()
-                .filter(h -> "DISPONIBLE".equals(h.estado()))
-                .filter(h -> habitacionService.estaDisponible(h.id(), fechaInicio, fechaFin))
+        return habitaciones.stream()
+                .filter(h -> habitacionService.estaDisponible(h.getId(), fechaInicio, fechaFin))
+                .map(h -> new HabitacionResponse(
+                        h.getId(), h.getNumero(), h.getEstado(), h.getPrecio(),
+                        h.getTipoHabitacion(),
+                        h.getHotel() != null ? h.getHotel().getId() : null
+                ))
                 .toList();
     }
 

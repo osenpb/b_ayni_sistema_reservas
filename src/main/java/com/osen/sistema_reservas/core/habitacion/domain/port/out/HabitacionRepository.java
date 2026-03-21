@@ -9,10 +9,17 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface HabitacionRepository extends JpaRepository<Habitacion, Long> {
+
+    @Query("SELECT h FROM Habitacion h JOIN FETCH h.tipoHabitacion JOIN FETCH h.hotel WHERE h.hotel.id = :hotelId")
+    List<Habitacion> findByHotelIdWithRelations(@Param("hotelId") Long hotelId);
+
+    @Query("SELECT h FROM Habitacion h JOIN FETCH h.hotel WHERE h.id IN :ids")
+    List<Habitacion> findByIdInWithRelations(@Param("ids") List<Long> ids);
+
     List<Habitacion> findByHotelId(Long hotelId);
     List<Habitacion> findByIdIn(List<Long> ids);
 
-    @Query("SELECT h FROM Habitacion h WHERE h.hotel.id = :hotelId AND h.estado = 'DISPONIBLE'")
+    @Query("SELECT h FROM Habitacion h JOIN FETCH h.tipoHabitacion JOIN FETCH h.hotel WHERE h.hotel.id = :hotelId AND h.estado = 'DISPONIBLE'")
     List<Habitacion> findDisponiblesByHotelId(@Param("hotelId") Long hotelId);
 
     @Query("SELECT COUNT(h) FROM Habitacion h WHERE h.hotel.id = :hotelId AND h.id NOT IN (" +
@@ -31,5 +38,4 @@ public interface HabitacionRepository extends JpaRepository<Habitacion, Long> {
             @Param("inicio") LocalDate inicio,
             @Param("fin") LocalDate fin
     );
-
 }

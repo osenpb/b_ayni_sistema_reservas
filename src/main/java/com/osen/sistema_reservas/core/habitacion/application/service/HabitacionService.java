@@ -39,6 +39,10 @@ public class HabitacionService {
         return habitacionRepository.findByHotelId(hotelId);
     }
 
+    public List<Habitacion> buscarDisponiblesPorHotelId(Long hotelId) {
+        return habitacionRepository.findDisponiblesByHotelId(hotelId);
+    }
+
     public void eliminarPorId(Long id) {
         if (!habitacionRepository.existsById(id)) {
             throw new EntityNotFoundException("Habitacion " + id);

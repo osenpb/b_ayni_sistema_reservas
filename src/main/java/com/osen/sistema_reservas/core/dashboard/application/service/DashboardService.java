@@ -7,9 +7,9 @@ import com.osen.sistema_reservas.core.hotel.domain.model.Hotel;
 import com.osen.sistema_reservas.core.hotel.application.service.HotelService;
 import com.osen.sistema_reservas.core.reserva.domain.model.Reserva;
 import com.osen.sistema_reservas.core.reserva.application.service.ReservaService;
-import com.osen.sistema_reservas.shared.helpers.dtos.DashboardStatsResponse;
-import lombok.RequiredArgsConstructor;
+import com.osen.sistema_reservas.core.dashboard.application.dtos.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -31,6 +31,7 @@ public class DashboardService {
         this.reservaService = reservaService;
     }
 
+    @Transactional(readOnly = true)
     public DashboardStatsResponse obtenerEstadisticas() {
         List<Departamento> departamentos = departamentoService.listar();
         List<Hotel> hoteles = hotelService.listarTodos();
@@ -51,15 +52,15 @@ public class DashboardService {
         );
     }
 
-    private Map<String, Long> calcularReservasPorEstado(List<Reserva> reservas) {
-        Map<String, Long> resultado = new HashMap<>();
-        resultado.put("CONFIRMADA", reservas.stream()
-                .filter(r -> "CONFIRMADA".equals(r.getEstado()))
-                .count());
-        resultado.put("CANCELADA", reservas.stream()
-                .filter(r -> "CANCELADA".equals(r.getEstado()))
-                .count());
-        return resultado;
+    private List<ReservaEstadoDTO> calcularReservasPorEstado(List<Reserva> reservas) {
+        Map<String, Long> counts = reservas.stream()
+                .collect(Collectors.groupingBy(Reserva::getEstado, Collectors.counting()));
+
+        return List.of(
+                new ReservaEstadoDTO("CONFIRMADA", counts.getOrDefault("CONFIRMADA", 0L)),
+                new ReservaEstadoDTO("PENDIENTE", counts.getOrDefault("PENDIENTE", 0L)),
+                new ReservaEstadoDTO("CANCELADA", counts.getOrDefault("CANCELADA", 0L))
+        );
     }
 
     private double calcularIngresosTotales(List<Reserva> reservas) {
@@ -69,81 +70,88 @@ public class DashboardService {
                 .sum();
     }
 
-    private Map<String, Long> calcularHotelesPorDepartamento(
+    private List<HotelDepartamentoDTO> calcularHotelesPorDepartamento(
             List<Departamento> departamentos, List<Hotel> hoteles) {
 
-        Map<String, Long> resultado = new LinkedHashMap<>();
-        for (Departamento dep : departamentos) {
-            long count = hoteles.stream()
-                    .filter(h -> h.getDepartamento() != null &&
-                            h.getDepartamento().getId().equals(dep.getId()))
-                    .count();
-            resultado.put(dep.getNombre(), count);
-        }
-        return resultado;
+        Map<Long, Long> countByDepId = hoteles.stream()
+                .filter(h -> h.getDepartamento() != null)
+                .collect(Collectors.groupingBy(
+                        h -> h.getDepartamento().getId(),
+                        Collectors.counting()
+                ));
+
+        return departamentos.stream()
+                .map(dep -> new HotelDepartamentoDTO(
+                        dep.getNombre(),
+                        countByDepId.getOrDefault(dep.getId(), 0L)))
+                .toList();
     }
 
-    private Map<String, Long> calcularReservasPorMes(List<Reserva> reservas) {
-        Map<String, Long> resultado = new LinkedHashMap<>();
-        LocalDate ahora = LocalDate.now();
+    private List<ReservaMensualDTO> calcularReservasPorMes(List<Reserva> reservas) {
+        Map<YearMonth, Long> countByMonth = reservas.stream()
+                .filter(r -> r.getFechaReserva() != null)
+                .collect(Collectors.groupingBy(
+                        r -> YearMonth.from(r.getFechaReserva()),
+                        Collectors.counting()
+                ));
 
+        List<ReservaMensualDTO> resultado = new ArrayList<>();
+        LocalDate ahora = LocalDate.now();
         for (int i = 5; i >= 0; i--) {
             YearMonth mes = YearMonth.from(ahora.minusMonths(i));
-            String nombreMes = mes.getMonth().toString().substring(0, 3) + " " + mes.getYear();
-
-            long count = reservas.stream()
-                    .filter(r -> r.getFechaReserva() != null)
-                    .filter(r -> YearMonth.from(r.getFechaReserva()).equals(mes))
-                    .count();
-
-            resultado.put(nombreMes, count);
+            resultado.add(new ReservaMensualDTO(
+                    formatMonth(mes),
+                    countByMonth.getOrDefault(mes, 0L)));
         }
         return resultado;
     }
 
-    private Map<String, Double> calcularIngresosPorMes(List<Reserva> reservas) {
-        Map<String, Double> resultado = new LinkedHashMap<>();
-        LocalDate ahora = LocalDate.now();
+    private List<IngresoMensualDTO> calcularIngresosPorMes(List<Reserva> reservas) {
+        Map<YearMonth, Double> sumByMonth = reservas.stream()
+                .filter(r -> "CONFIRMADA".equals(r.getEstado()))
+                .filter(r -> r.getFechaReserva() != null)
+                .collect(Collectors.groupingBy(
+                        r -> YearMonth.from(r.getFechaReserva()),
+                        Collectors.summingDouble(Reserva::getTotal)
+                ));
 
+        List<IngresoMensualDTO> resultado = new ArrayList<>();
+        LocalDate ahora = LocalDate.now();
         for (int i = 5; i >= 0; i--) {
             YearMonth mes = YearMonth.from(ahora.minusMonths(i));
-            String nombreMes = mes.getMonth().toString().substring(0, 3) + " " + mes.getYear();
-
-            double total = reservas.stream()
-                    .filter(r -> "CONFIRMADA".equals(r.getEstado()))
-                    .filter(r -> r.getFechaReserva() != null)
-                    .filter(r -> YearMonth.from(r.getFechaReserva()).equals(mes))
-                    .mapToDouble(Reserva::getTotal)
-                    .sum();
-
-            resultado.put(nombreMes, total);
+            resultado.add(new IngresoMensualDTO(
+                    formatMonth(mes),
+                    sumByMonth.getOrDefault(mes, 0.0)));
         }
         return resultado;
     }
 
-    private List<DashboardStatsResponse.TopHotel> calcularTopHoteles(List<Reserva> reservas) {
-        Map<String, Long> reservasPorHotel = reservas.stream()
+    private String formatMonth(YearMonth mes) {
+        return mes.getMonth().toString().substring(0, 3) + " " + mes.getYear();
+    }
+
+    private List<TopHotelDTO> calcularTopHoteles(List<Reserva> reservas) {
+        return reservas.stream()
                 .filter(r -> r.getHotel() != null)
                 .collect(Collectors.groupingBy(
                         r -> r.getHotel().getNombre(),
                         Collectors.counting()
-                ));
-
-        return reservasPorHotel.entrySet().stream()
+                ))
+                .entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
                 .limit(5)
-                .map(e -> new DashboardStatsResponse.TopHotel(e.getKey(), e.getValue()))
+                .map(e -> new TopHotelDTO(e.getKey(), e.getValue()))
                 .toList();
     }
 
-    private List<DashboardStatsResponse.ReservaReciente> obtenerReservasRecientes(List<Reserva> reservas) {
+    private List<ReservaRecienteDTO> obtenerReservasRecientes(List<Reserva> reservas) {
         return reservas.stream()
                 .sorted(Comparator.comparing(
                         Reserva::getFechaReserva,
                         Comparator.nullsLast(Comparator.reverseOrder())
                 ))
                 .limit(5)
-                .map(r -> new DashboardStatsResponse.ReservaReciente(
+                .map(r -> new ReservaRecienteDTO(
                         r.getId(),
                         r.getCliente() != null ?
                                 r.getCliente().getNombre() + " " + r.getCliente().getApellido() : "N/A",

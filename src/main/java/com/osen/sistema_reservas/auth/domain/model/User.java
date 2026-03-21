@@ -12,7 +12,10 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", indexes = {
+    @Index(name = "idx_users_role", columnList = "role_id"),
+    @Index(name = "idx_users_email", columnList = "email")
+})
 public class User implements UserDetails {
 
     @Id
@@ -26,7 +29,7 @@ public class User implements UserDetails {
 
     private String password;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     private Role role;
 

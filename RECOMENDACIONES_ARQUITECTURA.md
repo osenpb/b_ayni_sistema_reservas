@@ -19,13 +19,18 @@ El proyecto ha sido reorganizado bajo una arquitectura hexagonal con validacione
 - [x] SecurityConfig corregido (paths alineados con controllers)
 - [x] Perfiles de configuración (dev, test con Testcontainers, prod)
 - [x] Dependencia Testcontainers agregada (MySQL + JUnit Jupiter)
+- [x] Optimización JPA: índices en todas las entidades (14 índices)
+- [x] Fetch EAGER → LAZY en todas las relaciones ManyToOne/OneToOne
+- [x] JOIN FETCH en repositorios (elimina N+1)
+- [x] `@Transactional(readOnly = true)` en métodos de consulta
+- [x] `open-in-view: false` + `default_batch_fetch_size: 16`
+- [x] DTOs del dashboard refactorizados a records individuales
 
 ### ⚠️ Áreas de Mejora Pendientes
 - [ ] Implementación completa del flujo de refresh token
 - [ ] Pruebas unitarias e integración
 - [ ] Logging estructurado
 - [ ] Health checks y métricas
-- [ ] Optimización de consultas JPA
 
 ---
 
@@ -389,9 +394,9 @@ GET    /admin/dashboard/stats
 |-----------|---------------|-----------------|---------|
 | ✅ | Corregir endpoints REST | COMPLETADO | API consistente |
 | ✅ | Perfiles de configuración | COMPLETADO | Seguridad |
+| ✅ | Optimización JPA | COMPLETADO | Performance |
 | 🔴 Alta | Refresh Token completo | 8-12 horas | UX/Sesiones |
 | 🔴 Alta | Implementación Testing | 20-40 horas | Mantenibilidad |
-| 🟡 Media | Optimización JPA | 6-10 horas | Performance |
 | 🟢 Baja | Logging estructurado | 4-6 horas | Observabilidad |
 | 🟢 Baja | Health checks | 2-4 horas | Monitoreo |
 
@@ -440,9 +445,11 @@ GET    /admin/dashboard/stats
 - [ ] Configurar CI/CD con pipeline de calidad
 - [ ] Implementar SonarQube para análisis de código
 
-### ⏳ Fase 6: Optimización (PENDIENTE)
+### ⏳ Fase 6: Optimización (EN PROGRESO)
+- [x] Optimizar consultas JPA (evitar N+1)
+- [x] Agregar índices a entidades
+- [x] DTOs con records individuales (dashboard)
 - [ ] Implementar cache para consultas frecuentes
-- [ ] Optimizar consultas JPA (evitar N+1)
 - [ ] Implementar paginación en todos los listados
 - [ ] Agregar logging estructurado
 
@@ -461,6 +468,9 @@ GET    /admin/dashboard/stats
 | Cobertura de código | ~0% | > 70% |
 | Validaciones DTOs | 100% | 100% ✅ |
 | Arquitectura hexagonal | 100% | 100% ✅ |
+| Índices JPA | 14 índices | 14 ✅ |
+| Relaciones LAZY | 100% | 100% ✅ |
+| JOIN FETCH en repos | 100% | 100% ✅ |
 | Tiempo de respuesta API | N/A | < 200ms (P95) |
 | Disponibilidad | N/A | > 99.5% |
 
@@ -514,5 +524,5 @@ mvn compile -DskipTests
 ---
 
 *Documento actualizado el: 21 de Marzo de 2026*
-*Versión: 3.1*
-*Progreso: Fase 1, 2 y 3 completadas. Fase 4 en progreso (perfiles configurados).*
+*Versión: 3.2*
+*Progreso: Fase 1, 2, 3 completadas. Fase 4 y 6 en progreso. Fase 5 y 7 pendientes.*

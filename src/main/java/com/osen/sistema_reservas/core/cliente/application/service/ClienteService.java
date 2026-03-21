@@ -6,6 +6,7 @@ import com.osen.sistema_reservas.core.cliente.domain.model.Cliente;
 import com.osen.sistema_reservas.core.cliente.domain.port.out.ClienteRepository;
 import com.osen.sistema_reservas.shared.helpers.exceptions.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -45,6 +46,7 @@ public class ClienteService {
     }
 
 
+    @Transactional
     public Cliente crearOActualizar(ClienteRequest dto, User user) {
         // Si hay usuario autenticado, buscar cliente por userId
         if (user != null) {

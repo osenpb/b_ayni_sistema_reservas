@@ -1,7 +1,7 @@
 package com.osen.sistema_reservas.api.admin;
 
 import com.osen.sistema_reservas.core.dashboard.application.service.DashboardService;
-import com.osen.sistema_reservas.shared.helpers.dtos.DashboardStatsResponse;
+import com.osen.sistema_reservas.core.dashboard.application.dtos.DashboardStatsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
