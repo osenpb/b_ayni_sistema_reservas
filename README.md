@@ -1,100 +1,71 @@
-# Ayni – Reservation System
+# Ayni – Reservation System (Backend)
 
-Ayni is a lodging reservation application for hotels affiliated across Peruvian territory. The backend was developed with **Java 21** and **Spring Boot**, focusing on good practices in architecture, security, and design.
-
-The project implements **JWT-based authentication**, DTO management, custom exceptions, Spring Security filters, and pagination. It combines **Clean Architecture** for the authentication module with a **feature-based architecture** for the rest of the domain.  
-It also follows **SOLID principles**.
-
-The frontend repository that consumes this project can be found at:  
-https://github.com/osenpb/f_ayni_sistema_reservas
-
----
+Hotel reservation system for affiliates in Peruvian territory. Built with **Java 21** and **Spring Boot**, following architecture, security, and design best practices.
 
 ## Main Technologies
 
-- Java 21  
-- Spring Boot  
-- Spring Security + JWT + Nimbus JOSE  
-- Spring Data JPA  
-- Hibernate  
-- REST API  
-- Maven  
-- Database: MySQL  
-- Docker  
+- Java 21
+- Spring Boot 3.x
+- Spring Security + JWT (Nimbus JOSE)
+- Spring Data JPA + Hibernate
+- REST API
+- Maven
+- MySQL
+- Docker
 
----
+## Architecture
 
-## Security and Authentication
+**Package structure:** `com.osen.sistema_reservas`
 
-The authentication module follows **Clean Architecture principles**, clearly separating:
+**Hybrid approach:**
+- `auth/` module → Clean Architecture (Domain-Driven Design)
+- `core/` modules → Feature-based architecture
+- `api/` module → REST controllers (public/admin)
+- `shared/` module → Reusable components (exceptions, mappers, DTOs)
 
-- **Domain**: business rules and core models  
-- **Application**: use cases (login, registration, validation)  
-- **Infrastructure**: JWT implementation, repositories, and security configuration  
-- **Entrypoints**: REST controllers  
+### Auth Module Layers (Clean Architecture)
 
----
+```
+auth/
+├── domain/
+│   ├── model/          # Entities (User, Role)
+│   └── port/           # Interfaces (in/out)
+├── application/        # Use cases (services, mappers)
+└── infrastructure/    # Implementations (controllers, configs, filters)
+```
+
+### Core Modules (Feature-Based)
+
+- **reserva** - Reservation management
+- **hotel** - Hotel administration
+- **habitacion** - Room management
+- **tipoHabitacion** - Room type catalog
+- **departamento** - Locations/geography
+- **detalle_reserva** - Reservation details
+- **payment** - Mercado Pago integration
+- **dashboard** - Statistics and reports
 
 ## Features
 
-- Authentication and authorization using **JWT**
-- Custom **Spring Security filters**
-- Clear **separation of responsibilities** between layers
-- Centralized handling of **security-related errors**
+- JWT authentication and authorization
+- Custom Spring Security filters
+- Role-based access control (ADMIN, AFILIADO, CLIENTE)
+- Centralized exception handling
+- DTOs for API contract control
+- Data validation with Jakarta Bean Validation
+- Response caching with Caffeine
+- Migration from Cliente to User: fields nombre, apellido, dni now in User entity
 
----
+## Run the Project
 
-## Project Architecture
+```bash
+# Compile
+mvn clean package
 
-**Hybrid approach**
+# Run
+mvn spring-boot:run
+```
 
-- **Auth module → Clean Architecture**
-- **Rest of the domain → Feature-based architecture**
+## Frontend Repository
 
-This approach provides:
-
-- Maximum clarity in a critical module such as authentication  
-- Scalability and organization by **functional context** across the rest of the system  
-
-The project uses **DTOs** to:
-
-- Avoid exposing entities directly  
-- Control the API contract  
-- Facilitate validation and model evolution  
-
-Includes:
-
-- **Request and response DTOs**
-- Explicit conversion between **entities and DTOs**
-
----
-
-### Exception Handling
-
-- Custom **domain exceptions**
-- **@ControllerAdvice** for global exception handling
-- Clear and consistent **error responses**
-
----
-
-## Project Approach
-
-Ayni is designed as:
-
-- A **demonstration project** for a hotel reservation web application  
-- A **solid foundation for a real e-commerce system**  
-- An example of **modern Spring Boot best practices**
-
-Special emphasis on:
-
-- Clean architecture  
-- Security  
-- Scalability  
-- Code readability  
-
----
-
-## Upcoming Improvements
-
-- **OAuth2 integration**
-- **OpenAPI / Swagger documentation**
+https://github.com/osenpb/f_ayni_sistema_reservas
