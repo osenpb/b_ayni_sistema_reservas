@@ -40,7 +40,7 @@ services:
       mysql:
         condition: service_healthy
 
-  # Frontend Angular con Nginx
+  # Frontend Angular con http-server
   frontend:
     build:
       context: ./f_sistema_reservas
