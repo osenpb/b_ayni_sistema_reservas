@@ -22,7 +22,7 @@ public class HabitacionMapper {
                 habitacion.getEstado(),
                 habitacion.getPrecio(),
                 habitacion.getTipoHabitacion(),
-                habitacion.getHotel().getId()
+                habitacion.getHotel() != null ? habitacion.getHotel().getId() : null
         );
     }
 

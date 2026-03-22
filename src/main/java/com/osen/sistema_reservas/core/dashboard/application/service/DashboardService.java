@@ -153,8 +153,9 @@ public class DashboardService {
                 .limit(5)
                 .map(r -> new ReservaRecienteDTO(
                         r.getId(),
-                        r.getCliente() != null ?
-                                r.getCliente().getNombre() + " " + r.getCliente().getApellido() : "N/A",
+                        r.getUser() != null ?
+                                (r.getUser().getNombre() != null ? r.getUser().getNombre() : "") + " " + 
+                                (r.getUser().getApellido() != null ? r.getUser().getApellido() : "") : "N/A",
                         r.getHotel() != null ? r.getHotel().getNombre() : "N/A",
                         r.getFechaInicio(),
                         r.getFechaFin(),

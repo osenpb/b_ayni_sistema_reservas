@@ -90,12 +90,14 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
         Role roleClient = roleRepository.findById(2L)
                 .orElseThrow(() -> new EntityNotFoundException("Role:" + 2L));
 
-
         final User createUser = AuthMapper.fromDto(createUserDto);
         createUser.setEmail(createUserDto.email());
         createUser.setPassword(passwordEncoder.encode(createUserDto.password()));
         createUser.setRole(roleClient);
         createUser.setTelefono(createUserDto.telefono());
+        createUser.setNombre(createUserDto.nombre());
+        createUser.setApellido(createUserDto.apellido());
+        createUser.setDni(createUserDto.dni());
 
         final User user = userRepository.save(createUser);
         log.info("[USER] : User successfully created with id {}", user.getId());

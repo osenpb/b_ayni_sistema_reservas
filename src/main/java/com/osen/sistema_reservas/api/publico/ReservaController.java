@@ -98,8 +98,7 @@ public class ReservaController {
     }
 
     private void validarPropietario(Reserva reserva, User user) {
-        if (reserva.getCliente().getUser() == null ||
-                !reserva.getCliente().getUser().getId().equals(user.getId())) {
+        if (reserva.getUser() == null || !reserva.getUser().getId().equals(user.getId())) {
             throw new ForbiddenException("No tiene permiso sobre esta reserva");
         }
     }

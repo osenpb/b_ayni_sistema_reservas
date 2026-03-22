@@ -16,10 +16,25 @@ public class AuthMapper {
     }
 
     public static User fromDto(final RegisterRequest createUserDto) {
+        String username = createUserDto.username();
+        if (username == null || username.isBlank()) {
+            username = generateUsername(createUserDto.nombre(), createUserDto.dni());
+        }
         return User.builder()
                 .email(createUserDto.email())
-                .username(createUserDto.username())
+                .username(username)
+                .nombre(createUserDto.nombre())
+                .apellido(createUserDto.apellido())
+                .dni(createUserDto.dni())
+                .telefono(createUserDto.telefono())
                 .build();
+    }
+
+    private static String generateUsername(String nombre, String dni) {
+        if (nombre != null && dni != null) {
+            return nombre.toLowerCase().replaceAll("\\s+", "") + dni;
+        }
+        return "user_" + System.currentTimeMillis();
     }
 
     public static Authentication fromDto(final LoginRequest loginRequestDTO) {
@@ -30,7 +45,16 @@ public class AuthMapper {
     }
 
     public static UserResponse toDto(final User user) {
-        return new UserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
+        return new UserResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getNombre(),
+                user.getApellido(),
+                user.getTelefono(),
+                user.getDni(),
+                user.getRole()
+        );
     }
 
 }

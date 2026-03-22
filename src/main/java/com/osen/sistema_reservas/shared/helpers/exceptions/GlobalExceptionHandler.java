@@ -208,19 +208,30 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> dataIntegrityViolationException(
-            RuntimeException ex, HttpServletRequest request) {
+            DataIntegrityViolationException ex, HttpServletRequest request) {
 
-        log.error("Correo ya existente: ", ex);
+        String message = ex.getMostSpecificCause().getMessage();
+        String userMessage = "Datos duplicados";
+
+        if (message.contains("dni")) {
+            userMessage = "El DNI ya está registrado";
+        } else if (message.contains("email")) {
+            userMessage = "El correo electrónico ya está registrado";
+        } else if (message.contains("username")) {
+            userMessage = "El nombre de usuario ya está en uso";
+        }
+
+        log.warn("Datos duplicados: {}", message);
 
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
-                .status(HttpStatus.FORBIDDEN.value())
-                .error("Internal Server Error")
-                .message(ex.getMessage())
+                .status(HttpStatus.CONFLICT.value())
+                .error("Duplicate Entry")
+                .message(userMessage)
                 .path(request.getRequestURI())
                 .build();
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
     @ExceptionHandler(Exception.class)

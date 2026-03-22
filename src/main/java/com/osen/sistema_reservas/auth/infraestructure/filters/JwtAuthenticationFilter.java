@@ -41,8 +41,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final Optional<String> token = resolveTokenFromHeader(request);
 
-        // Si no hay token o es inválido, que Spring Security maneje la autorización
-        if (token.isEmpty() || !authService.validateToken(token.get())) {
+        // Si no hay token, que Spring Security maneje la autorización
+        if (token.isEmpty()) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // Validar token de forma segura
+        boolean validToken;
+        try {
+            validToken = authService.validateToken(token.get());
+        } catch (Exception e) {
+            // Token inválido o expirado, continuar sin autenticación
+            validToken = false;
+        }
+
+        if (!validToken) {
             filterChain.doFilter(request, response);
             return;
         }

@@ -29,11 +29,19 @@ public class User implements UserDetails {
 
     private String password;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
 
     private String telefono;
+
+    @Column(nullable = false)
+    private String nombre;
+
+    private String apellido;
+
+    @Column(unique = true)
+    private String dni;
 
     @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean activo = true;
@@ -44,7 +52,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.getRolename()));
     }
 
     @Override
@@ -60,13 +68,16 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(Long id, String username, String email, String password, Role role, String telefono, Boolean activo, LocalDateTime fechaCreacion) {
+    public User(Long id, String username, String email, String password, Role role, String telefono, String nombre, String apellido, String dni, Boolean activo, LocalDateTime fechaCreacion) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
         this.telefono = telefono;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.dni = dni;
         this.activo = activo;
         this.fechaCreacion = fechaCreacion;
     }
@@ -91,6 +102,18 @@ public class User implements UserDetails {
 
     public void setTelefono(String telefono) { this.telefono = telefono; }
 
+    public String getNombre() { return nombre; }
+
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public String getApellido() { return apellido; }
+
+    public void setApellido(String apellido) { this.apellido = apellido; }
+
+    public String getDni() { return dni; }
+
+    public void setDni(String dni) { this.dni = dni; }
+
     public Boolean getActivo() { return activo; }
 
     public void setActivo(Boolean activo) { this.activo = activo; }
@@ -107,6 +130,9 @@ public class User implements UserDetails {
         private String password;
         private Role role;
         private String telefono;
+        private String nombre;
+        private String apellido;
+        private String dni;
         private Boolean activo;
         private LocalDateTime fechaCreacion;
 
@@ -140,6 +166,21 @@ public class User implements UserDetails {
             return this;
         }
 
+        public UserBuilder nombre(String nombre) {
+            this.nombre = nombre;
+            return this;
+        }
+
+        public UserBuilder apellido(String apellido) {
+            this.apellido = apellido;
+            return this;
+        }
+
+        public UserBuilder dni(String dni) {
+            this.dni = dni;
+            return this;
+        }
+
         public UserBuilder activo(Boolean activo) {
             this.activo = activo;
             return this;
@@ -158,6 +199,9 @@ public class User implements UserDetails {
                     password,
                     role,
                     telefono,
+                    nombre,
+                    apellido,
+                    dni,
                     activo != null ? activo : true,
                     fechaCreacion != null ? fechaCreacion : LocalDateTime.now()
             );

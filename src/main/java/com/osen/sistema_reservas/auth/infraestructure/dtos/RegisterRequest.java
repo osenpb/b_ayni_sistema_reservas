@@ -6,8 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record RegisterRequest(
-        @NotBlank(message = "El username es requerido")
-        @Size(min = 3, max = 50, message = "El username debe tener entre 3 y 50 caracteres")
+        @Size(min = 0, max = 50, message = "El username debe tener entre 3 y 50 caracteres")
         String username,
 
         @NotBlank(message = "El email es requerido")
@@ -19,6 +18,17 @@ public record RegisterRequest(
         String password,
 
         @Pattern(regexp = "9\\d{8}", message = "El número debe tener 9 dígitos y empezar con 9")
-        String telefono
+        String telefono,
+
+        @NotBlank(message = "El nombre es obligatorio")
+        @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$", message = "El nombre solo puede contener letras")
+        String nombre,
+
+        @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]*$", message = "El apellido solo puede contener letras")
+        String apellido,
+
+        @NotBlank(message = "El DNI es obligatorio")
+        @Pattern(regexp = "\\d{8}", message = "El DNI debe tener exactamente 8 dígitos")
+        String dni
 ) {
 }

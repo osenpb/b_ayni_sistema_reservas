@@ -1,6 +1,6 @@
 package com.osen.sistema_reservas.core.reserva.domain.model;
 
-import com.osen.sistema_reservas.core.cliente.domain.model.Cliente;
+import com.osen.sistema_reservas.auth.domain.model.User;
 import com.osen.sistema_reservas.core.detalle_reserva.domain.model.DetalleReserva;
 import com.osen.sistema_reservas.core.hotel.domain.model.Hotel;
 import jakarta.persistence.*;
@@ -12,8 +12,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "reserva", indexes = {
-    @Index(name = "idx_reserva_cliente", columnList = "cliente_id"),
     @Index(name = "idx_reserva_hotel", columnList = "hotel_id"),
+    @Index(name = "idx_reserva_user", columnList = "user_id"),
     @Index(name = "idx_reserva_fechas", columnList = "fecha_inicio, fecha_fin"),
     @Index(name = "idx_reserva_estado", columnList = "estado"),
     @Index(name = "idx_reserva_fecha_reserva", columnList = "fecha_reserva")
@@ -40,8 +40,8 @@ public class Reserva {
     private String estado;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cliente_id", nullable = false)
-    private Cliente cliente;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetalleReserva> detalles = new ArrayList<>();
@@ -57,14 +57,14 @@ public class Reserva {
 
     public Reserva() { }
 
-    public Reserva(Long id, LocalDate fechaReserva, LocalDate fechaInicio, LocalDate fechaFin, double total, String estado, Cliente cliente, List<DetalleReserva> detalles, Hotel hotel) {
+    public Reserva(Long id, LocalDate fechaReserva, LocalDate fechaInicio, LocalDate fechaFin, double total, String estado, User user, List<DetalleReserva> detalles, Hotel hotel) {
         this.id = id;
         this.fechaReserva = fechaReserva;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
         this.total = total;
         this.estado = estado;
-        this.cliente = cliente;
+        this.user = user;
         this.detalles = detalles;
         this.hotel = hotel;
     }
@@ -81,8 +81,8 @@ public class Reserva {
     public void setTotal(double total) { this.total = total; }
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
-    public Cliente getCliente() { return cliente; }
-    public void setCliente(Cliente cliente) { this.cliente = cliente; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
     public List<DetalleReserva> getDetalles() { return detalles; }
     public void setDetalles(List<DetalleReserva> detalles) { this.detalles = detalles; }
     public Hotel getHotel() { return hotel; }

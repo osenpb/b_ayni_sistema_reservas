@@ -6,7 +6,10 @@ public record UserResponse(
         Long id,
         String username,
         String email,
+        String nombre,
+        String apellido,
+        String telefono,
+        String dni,
         Role role
 ) {
-
 }

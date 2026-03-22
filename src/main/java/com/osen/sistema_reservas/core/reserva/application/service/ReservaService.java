@@ -1,8 +1,6 @@
 package com.osen.sistema_reservas.core.reserva.application.service;
 
 import com.osen.sistema_reservas.auth.domain.model.User;
-import com.osen.sistema_reservas.core.cliente.domain.model.Cliente;
-import com.osen.sistema_reservas.core.cliente.application.service.ClienteService;
 import com.osen.sistema_reservas.core.detalle_reserva.domain.model.DetalleReserva;
 import com.osen.sistema_reservas.core.habitacion.domain.model.Habitacion;
 import com.osen.sistema_reservas.core.habitacion.application.service.HabitacionService;
@@ -18,9 +16,9 @@ import com.osen.sistema_reservas.shared.helpers.exceptions.ConflictException;
 import com.osen.sistema_reservas.shared.helpers.exceptions.EntityNotFoundException;
 import com.osen.sistema_reservas.shared.helpers.exceptions.ValidationException;
 import com.osen.sistema_reservas.shared.helpers.mappers.ReservaMapper;
-import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -30,44 +28,43 @@ import java.util.List;
 public class ReservaService {
 
     private final ReservaRepository reservaRepository;
-    private final ClienteService clienteService;
     private final HotelService hotelService;
     private final HabitacionService habitacionService;
 
-    public ReservaService(ReservaRepository reservaRepository, ClienteService clienteService, HotelService hotelService, HabitacionService habitacionService) {
+    public ReservaService(ReservaRepository reservaRepository, HotelService hotelService, HabitacionService habitacionService) {
         this.reservaRepository = reservaRepository;
-        this.clienteService = clienteService;
         this.hotelService = hotelService;
         this.habitacionService = habitacionService;
     }
 
     // ==================== CONSULTAS ====================
 
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public List<ReservaListResponse> listarResponse() {
         return reservaRepository.findAllWithRelations().stream()
                 .map(ReservaMapper::toListResponse)
                 .toList();
     }
 
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public List<ReservaListResponse> buscarReservasPorDniClienteResponse(String dni) {
-        return reservaRepository.findByClienteDniWithRelations(dni).stream()
+        return reservaRepository.findByUsuarioDniWithRelations(dni).stream()
                 .map(ReservaMapper::toListResponse)
                 .toList();
     }
 
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public List<Reserva> listarTodas() {
         return reservaRepository.findAllWithRelations();
     }
 
+    @Transactional(readOnly = true)
     public Reserva buscarPorId(Long id) {
         return reservaRepository.findByIdWithRelations(id)
                 .orElseThrow(() -> new EntityNotFoundException("Reserva con ID:" + id));
     }
 
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public List<Reserva> buscarReservasPorUsuarioIdYFechas(Long userId, LocalDate fechaInicio, LocalDate fechaFin) {
         return reservaRepository.findByUsuarioIdAndFechas(userId, fechaInicio, fechaFin);
     }
@@ -90,6 +87,10 @@ public class ReservaService {
 
     @Transactional
     public Reserva reservarHabitaciones(Long hotelId, ReservaRequest dto, User user) {
+        if (user == null) {
+            throw new ValidationException("usuario", "Debe estar autenticado para realizar una reserva");
+        }
+
         validarReservaRequest(dto);
 
         Hotel hotel = hotelService.buscarPorId(hotelId);
@@ -98,8 +99,6 @@ public class ReservaService {
         List<Habitacion> habitaciones = validarYObtenerHabitaciones(
                 hotel, dto.habitacionesIds(), dto.fechaInicio(), dto.fechaFin());
 
-        Cliente cliente = clienteService.crearOActualizar(dto.cliente(), user);
-
         long noches = ChronoUnit.DAYS.between(dto.fechaInicio(), dto.fechaFin());
         double total = calcularTotal(habitaciones, noches);
 
@@ -107,7 +106,7 @@ public class ReservaService {
         reserva.setFechaReserva(LocalDate.now());
         reserva.setFechaInicio(dto.fechaInicio());
         reserva.setFechaFin(dto.fechaFin());
-        reserva.setCliente(cliente);
+        reserva.setUser(user);
         reserva.setHotel(hotel);
         reserva.setTotal(total);
         reserva.setEstado("PENDIENTE");
@@ -120,11 +119,6 @@ public class ReservaService {
         }
 
         return reservaRepository.save(reserva);
-    }
-
-    @Transactional
-    public Reserva reservarHabitaciones(Long hotelId, ReservaRequest dto) {
-        return reservarHabitaciones(hotelId, dto, null);
     }
 
     // ==================== ACTUALIZAR RESERVA (ADMIN) ====================
@@ -142,16 +136,6 @@ public class ReservaService {
             Hotel nuevoHotel = hotelService.buscarPorId(dto.hotelId());
             reserva.setHotel(nuevoHotel);
         }
-
-        Cliente cliente = reserva.getCliente();
-        cliente.setNombre(dto.cliente().nombre());
-        cliente.setApellido(dto.cliente().apellido());
-        cliente.setEmail(dto.cliente().email());
-        cliente.setDni(dto.cliente().dni());
-        if (dto.cliente().telefono() != null) {
-            cliente.setTelefono(dto.cliente().telefono());
-        }
-        clienteService.guardar(cliente);
 
         actualizarHabitacionesReserva(reserva, dto);
 
@@ -208,9 +192,6 @@ public class ReservaService {
         }
         if (dto.habitacionesIds() == null || dto.habitacionesIds().isEmpty()) {
             throw new ValidationException("habitacionesIds", "Debe seleccionar al menos una habitación");
-        }
-        if (dto.cliente() == null) {
-            throw new ValidationException("cliente", "Los datos del cliente son requeridos");
         }
     }
 

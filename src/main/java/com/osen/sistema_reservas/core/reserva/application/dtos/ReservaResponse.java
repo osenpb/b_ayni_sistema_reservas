@@ -1,6 +1,5 @@
 package com.osen.sistema_reservas.core.reserva.application.dtos;
 
-import com.osen.sistema_reservas.core.cliente.application.dtos.ClienteResponse;
 import com.osen.sistema_reservas.core.detalle_reserva.application.dtos.DetalleReservaResponse;
 import com.osen.sistema_reservas.core.hotel.application.dtos.HotelResponse;
 
@@ -15,6 +14,10 @@ public record ReservaResponse(
         double total,
         String estado,
         HotelResponse hotel,
-        ClienteResponse cliente,
+        Long usuarioId,
+        String usuarioNombre,
+        String usuarioApellido,
+        String usuarioEmail,
+        String usuarioDni,
         List<DetalleReservaResponse> detalles
 ) {}

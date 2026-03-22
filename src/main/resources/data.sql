@@ -5,24 +5,30 @@
 INSERT IGNORE INTO roles (role_id, rolename) VALUES (1, 'ADMIN');
 INSERT IGNORE INTO roles (role_id, rolename) VALUES (2, 'USER');
 
-INSERT IGNORE INTO users (username, email, password, role_id, telefono, activo, fecha_creacion)
+INSERT IGNORE INTO users (username, email, password, role_id, telefono, nombre, apellido, dni, activo, fecha_creacion)
 VALUES (
     'Administrador',
     'admin@hotel.com',
     '$2a$12$LhRqC4i8zzzS6QkVP.KtduVbOVeRjcYoi30Aq14J6V1ixfPbPaTre',
     1,
     '999999999',
+    'Administrador',
+    'Sistema',
+    '12345678',
     TRUE,
     NOW()
 );
 
-INSERT IGNORE INTO users (username, email, password, role_id, telefono, activo, fecha_creacion)
+INSERT IGNORE INTO users (username, email, password, role_id, telefono, nombre, apellido, dni, activo, fecha_creacion)
 VALUES (
     'usuario',
     'usuario@usuario.com',
     '$2a$12$69h4r0/I/9P0Ve34F0VlRe3SNJKPrszGBarBte3YAm/yo/T6URy2K',
-    1,
+    2,
     '999999999',
+    'Usuario',
+    'Demo',
+    '87654321',
     TRUE,
     NOW()
 );

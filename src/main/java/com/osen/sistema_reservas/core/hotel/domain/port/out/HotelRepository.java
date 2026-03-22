@@ -10,13 +10,13 @@ import java.util.Optional;
 
 public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
-    @Query("SELECT h FROM Hotel h JOIN FETCH h.departamento LEFT JOIN FETCH h.habitaciones hab LEFT JOIN FETCH hab.tipoHabitacion")
+    @Query("SELECT DISTINCT h FROM Hotel h JOIN FETCH h.departamento LEFT JOIN FETCH h.habitaciones hab LEFT JOIN FETCH hab.tipoHabitacion")
     List<Hotel> findAllWithRelations();
 
-    @Query("SELECT h FROM Hotel h JOIN FETCH h.departamento LEFT JOIN FETCH h.habitaciones hab LEFT JOIN FETCH hab.tipoHabitacion WHERE h.departamento.id = :departamentoId")
+    @Query("SELECT DISTINCT h FROM Hotel h JOIN FETCH h.departamento LEFT JOIN FETCH h.habitaciones hab LEFT JOIN FETCH hab.tipoHabitacion WHERE h.departamento.id = :departamentoId")
     List<Hotel> findByDepartamentoIdWithRelations(@Param("departamentoId") Long departamentoId);
 
-    @Query("SELECT h FROM Hotel h JOIN FETCH h.departamento LEFT JOIN FETCH h.habitaciones hab LEFT JOIN FETCH hab.tipoHabitacion WHERE h.id = :id")
+    @Query("SELECT DISTINCT h FROM Hotel h JOIN FETCH h.departamento LEFT JOIN FETCH h.habitaciones hab LEFT JOIN FETCH hab.tipoHabitacion WHERE h.id = :id")
     Optional<Hotel> findByIdWithRelations(@Param("id") Long id);
 
     List<Hotel> findByDepartamentoId(Long departamentoId);

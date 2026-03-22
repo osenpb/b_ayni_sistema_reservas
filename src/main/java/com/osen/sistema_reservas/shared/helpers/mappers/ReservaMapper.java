@@ -1,7 +1,8 @@
 package com.osen.sistema_reservas.shared.helpers.mappers;
 
-import com.osen.sistema_reservas.core.cliente.domain.model.Cliente;
+import com.osen.sistema_reservas.auth.domain.model.User;
 import com.osen.sistema_reservas.core.detalle_reserva.application.dtos.DetalleReservaResponse;
+import com.osen.sistema_reservas.core.hotel.application.dtos.HotelResponse;
 import com.osen.sistema_reservas.core.reserva.application.dtos.ReservaListResponse;
 import com.osen.sistema_reservas.core.reserva.application.dtos.ReservaResponse;
 import com.osen.sistema_reservas.core.reserva.domain.model.Reserva;
@@ -19,7 +20,24 @@ public class ReservaMapper {
                 ))
                 .toList();
 
-        Cliente cliente = reserva.getCliente();
+        // Hotel simplificado sin habitaciones para evitar LazyInitializationException
+        var hotel = reserva.getHotel();
+        HotelResponse hotelResponse = new HotelResponse(
+                hotel.getId(),
+                hotel.getNombre(),
+                hotel.getDireccion(),
+                DepartamentoMapper.toDTO(hotel.getDepartamento()),
+                List.of(),
+                hotel.getImagenUrl()
+        );
+
+        // Usuario datos (de User directamente)
+        User user = reserva.getUser();
+        Long usuarioId = user != null ? user.getId() : null;
+        String usuarioNombre = user != null ? (user.getNombre() != null ? user.getNombre() : "") : "";
+        String usuarioApellido = user != null ? (user.getApellido() != null ? user.getApellido() : "") : "";
+        String usuarioEmail = user != null ? (user.getEmail() != null ? user.getEmail() : "") : "";
+        String usuarioDni = user != null ? (user.getDni() != null ? user.getDni() : "") : "";
 
         return new ReservaResponse(
                 reserva.getId(),
@@ -28,8 +46,12 @@ public class ReservaMapper {
                 reserva.getFechaFin(),
                 reserva.getTotal(),
                 reserva.getEstado(),
-                HotelMapper.toDTO(reserva.getHotel()),
-                ClienteMapper.toResponse(cliente),
+                hotelResponse,
+                usuarioId,
+                usuarioNombre,
+                usuarioApellido,
+                usuarioEmail,
+                usuarioDni,
                 detalles
         );
     }
@@ -54,20 +76,19 @@ public class ReservaMapper {
             );
         }
 
-        // Cliente simplificado
-        ReservaListResponse.ClienteSimple clienteSimple = null;
-        if (reserva.getCliente() != null) {
-            Cliente c = reserva.getCliente();
-            clienteSimple = new ReservaListResponse.ClienteSimple(
-                    c.getId(),
-                    c.getNombre() != null ? c.getNombre() : "",
-                    c.getApellido() != null ? c.getApellido() : "",
-                    c.getEmail() != null ? c.getEmail() : "",
-                    c.getTelefono() != null ? c.getTelefono() : "",
-                    c.getDni() != null ? c.getDni() : ""
+        // Usuario simplificado (de User directamente)
+        ReservaListResponse.UsuarioSimple usuarioSimple = null;
+        if (reserva.getUser() != null) {
+            User u = reserva.getUser();
+            usuarioSimple = new ReservaListResponse.UsuarioSimple(
+                    u.getId(),
+                    u.getNombre() != null ? u.getNombre() : "",
+                    u.getApellido() != null ? u.getApellido() : "",
+                    u.getEmail() != null ? u.getEmail() : "",
+                    u.getTelefono() != null ? u.getTelefono() : "",
+                    u.getDni() != null ? u.getDni() : ""
             );
         }
-
 
         List<ReservaListResponse.DetalleSimple> detallesSimples = List.of();
         if (reserva.getDetalles() != null) {
@@ -88,7 +109,7 @@ public class ReservaMapper {
                 reserva.getTotal(),
                 reserva.getEstado(),
                 hotelSimple,
-                clienteSimple,
+                usuarioSimple,
                 detallesSimples
         );
     }

@@ -10,7 +10,7 @@ public class HotelMapper {
                 hotel.getId(),
                 hotel.getNombre(),
                 hotel.getDireccion(),
-                hotel.getDepartamento(),
+                DepartamentoMapper.toDTO(hotel.getDepartamento()),
                 hotel.getHabitaciones().stream().map(HabitacionMapper::toDTO).toList(),
                 hotel.getImagenUrl()
         );

@@ -15,7 +15,7 @@ public record ReservaListResponse(
         double total,
         String estado,
         HotelSimple hotel,
-        ClienteSimple cliente,
+        UsuarioSimple usuario,
         List<DetalleSimple> detalles
 ) {
     /**
@@ -35,13 +35,16 @@ public record ReservaListResponse(
     ) {}
 
 
-    public record ClienteSimple(
+    /**
+     * Usuario simplificado - datos del User directamente
+     */
+    public record UsuarioSimple(
             Long id,
             String nombre,
             String apellido,
             String email,
             String telefono,
-            String documento
+            String dni
     ) {}
 
 

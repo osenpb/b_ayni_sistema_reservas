@@ -1,7 +1,5 @@
 package com.osen.sistema_reservas.core.reserva.application.dtos;
 
-import com.osen.sistema_reservas.core.cliente.application.dtos.ClienteRequest;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
@@ -23,10 +21,6 @@ public record ReservaAdminUpdateDTO(
         @NotNull(message = "El hotel es requerido")
         @Positive(message = "El ID del hotel debe ser positivo")
         Long hotelId,
-
-        @NotNull(message = "Los datos del cliente son requeridos")
-        @Valid
-        ClienteRequest cliente,
 
         @NotEmpty(message = "Debe seleccionar al menos una habitación")
         List<Long> habitaciones
