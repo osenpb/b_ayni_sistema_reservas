@@ -6,7 +6,7 @@ The project implements **JWT-based authentication**, DTO management, custom exce
 It also follows **SOLID principles**.
 
 The frontend repository that consumes this project can be found at:  
-https://github.com/osenpb/f_sistema_reserva
+https://github.com/osenpb/f_ayni_sistema_reserva
 
 ---
 
