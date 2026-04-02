@@ -27,8 +27,8 @@ public class TokenServiceImpl implements TokenService {
     @Value("${application.security.jwt.expiration}")
     private int jwtExpiration;
 
-    @Value("${application.security.jwt.refresh-expiration}")
-    private int jwtRefreshExpiration;
+//    @Value("${application.security.jwt.refresh-expiration}")
+//    private int jwtRefreshExpiration;
 
     private final JwtEncoder jwtEncoder;
     private final JwtDecoder jwtDecoder;
