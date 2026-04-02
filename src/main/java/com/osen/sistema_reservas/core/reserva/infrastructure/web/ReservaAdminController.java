@@ -1,4 +1,4 @@
-package com.osen.sistema_reservas.api.admin;
+package com.osen.sistema_reservas.core.reserva.infrastructure.web;
 
 import com.osen.sistema_reservas.core.reserva.application.dtos.ReservaAdminUpdateDTO;
 import com.osen.sistema_reservas.core.reserva.application.dtos.ReservaListResponse;
@@ -14,11 +14,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/reservas")
-public class AdminReservaController {
+public class ReservaAdminController {
 
     private final ReservaService reservaService;
 
-    public AdminReservaController(ReservaService reservaService) {
+    public ReservaAdminController(ReservaService reservaService) {
         this.reservaService = reservaService;
     }
 

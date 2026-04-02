@@ -1,4 +1,4 @@
-package com.osen.sistema_reservas.api.publico;
+package com.osen.sistema_reservas.core.departamento.infrastructure.web;
 
 import com.osen.sistema_reservas.core.departamento.application.dtos.DepartamentoResponse;
 import com.osen.sistema_reservas.core.departamento.application.service.DepartamentoService;
@@ -9,11 +9,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/public/departamentos")
-public class DepartamentoController {
+public class DepartamentoPublicController {
 
     private final DepartamentoService departamentoService;
 
-    public DepartamentoController(DepartamentoService departamentoService) {
+    public DepartamentoPublicController(DepartamentoService departamentoService) {
         this.departamentoService = departamentoService;
     }
 

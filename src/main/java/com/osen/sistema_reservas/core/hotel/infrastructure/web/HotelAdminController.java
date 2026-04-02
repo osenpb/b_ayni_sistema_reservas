@@ -1,4 +1,4 @@
-package com.osen.sistema_reservas.api.admin;
+package com.osen.sistema_reservas.core.hotel.infrastructure.web;
 
 import com.osen.sistema_reservas.core.hotel.application.dtos.HotelRequest;
 import com.osen.sistema_reservas.core.hotel.application.dtos.HotelResponse;
@@ -15,11 +15,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/hoteles")
-public class AdminHotelController {
+public class HotelAdminController {
 
     private final HotelService hotelService;
 
-    public AdminHotelController(HotelService hotelService) {
+    public HotelAdminController(HotelService hotelService) {
         this.hotelService = hotelService;
     }
 

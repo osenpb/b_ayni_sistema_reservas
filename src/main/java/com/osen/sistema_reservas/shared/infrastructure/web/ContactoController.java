@@ -1,4 +1,4 @@
-package com.osen.sistema_reservas.api.publico;
+package com.osen.sistema_reservas.shared.infrastructure.web;
 
 import com.osen.sistema_reservas.shared.helpers.dtos.MessageResponse;
 import org.springframework.http.ResponseEntity;

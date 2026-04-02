@@ -1,4 +1,4 @@
-package com.osen.sistema_reservas.api.admin;
+package com.osen.sistema_reservas.core.departamento.infrastructure.web;
 
 import com.osen.sistema_reservas.core.departamento.application.dtos.DepartamentoRequest;
 import com.osen.sistema_reservas.core.departamento.application.dtos.DepartamentoResponse;
@@ -16,44 +16,32 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/departamentos")
-public class AdminDepartamentoController {
+public class DepartamentoAdminController {
 
     private final DepartamentoService departamentoService;
 
-    public AdminDepartamentoController(DepartamentoService departamentoService) {
+    public DepartamentoAdminController(DepartamentoService departamentoService) {
         this.departamentoService = departamentoService;
     }
 
-    /**
-     * Lista todos los departamentos
-     */
     @GetMapping
     public ResponseEntity<List<DepartamentoResponse>> listar() {
         List<DepartamentoResponse> response = departamentoService.listarResponse();
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Obtiene un departamento por ID
-     */
     @GetMapping("/{id}")
     public ResponseEntity<DepartamentoResponse> obtener(@PathVariable Long id) {
         Departamento departamento = departamentoService.buscarPorId(id);
         return ResponseEntity.ok(DepartamentoMapper.toDTO(departamento));
     }
 
-    /**
-     * Crea un nuevo departamento
-     */
     @PostMapping
     public ResponseEntity<DepartamentoResponse> crear(@RequestBody @Valid DepartamentoRequest request) {
         Departamento departamento = departamentoService.crear(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(DepartamentoMapper.toDTO(departamento));
     }
 
-    /**
-     * Actualiza un departamento existente
-     */
     @PutMapping("/{id}")
     public ResponseEntity<DepartamentoResponse> actualizar(
             @PathVariable Long id,
@@ -63,9 +51,6 @@ public class AdminDepartamentoController {
         return ResponseEntity.ok(DepartamentoMapper.toDTO(departamento));
     }
 
-    /**
-     * Elimina un departamento
-     */
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponse> eliminar(@PathVariable Long id) {
         departamentoService.eliminar(id);

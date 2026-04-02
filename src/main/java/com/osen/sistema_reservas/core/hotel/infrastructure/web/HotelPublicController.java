@@ -1,4 +1,4 @@
-package com.osen.sistema_reservas.api.publico;
+package com.osen.sistema_reservas.core.hotel.infrastructure.web;
 
 import com.osen.sistema_reservas.core.departamento.application.dtos.DepartamentoResponse;
 import com.osen.sistema_reservas.core.departamento.domain.model.Departamento;
@@ -21,12 +21,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/public/hoteles")
-public class HotelController {
+public class HotelPublicController {
 
     private final HotelService hotelService;
     private final DepartamentoService departamentoService;
 
-    public HotelController(HotelService hotelService, DepartamentoService departamentoService) {
+    public HotelPublicController(HotelService hotelService, DepartamentoService departamentoService) {
         this.hotelService = hotelService;
         this.departamentoService = departamentoService;
     }

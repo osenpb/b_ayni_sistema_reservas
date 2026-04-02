@@ -1,4 +1,4 @@
-package com.osen.sistema_reservas.api.publico;
+package com.osen.sistema_reservas.core.reserva.infrastructure.web;
 
 import com.osen.sistema_reservas.auth.domain.model.User;
 import com.osen.sistema_reservas.core.reserva.application.dtos.*;
@@ -19,11 +19,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/public/reservas")
-public class ReservaController {
+public class ReservaPublicController {
 
     private final ReservaService reservaService;
 
-    public ReservaController(ReservaService reservaService) {
+    public ReservaPublicController(ReservaService reservaService) {
         this.reservaService = reservaService;
     }
 

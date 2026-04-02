@@ -1,26 +1,26 @@
 spring:
+  application:
+    name: "sistema_reservas"
+
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3306/dawiapp}
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:mysql}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-
-
-  application:
-    name: "sistema_reservas"
-
   jpa:
     hibernate:
       ddl-auto: update
-
-  output:
-    ansi:
-      enabled: always
+    defer-datasource-initialization: true
 
   sql:
     init:
       encoding: UTF-8
+      mode: always
+
+  output:
+    ansi:
+      enabled: always
 
 application:
   security:

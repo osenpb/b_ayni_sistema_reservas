@@ -1,4 +1,4 @@
-package com.osen.sistema_reservas.api.publico;
+package com.osen.sistema_reservas.core.habitacion.infrastructure.web;
 
 import com.osen.sistema_reservas.core.habitacion.application.dtos.HabitacionDisponibilidadDTO;
 import com.osen.sistema_reservas.core.habitacion.application.service.HabitacionService;
@@ -17,24 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Controller público para consultas de habitaciones.
- */
 @RestController
 @RequestMapping("/public/habitaciones")
-public class HabitacionConsultaController {
+public class HabitacionController {
 
     private final HabitacionService habitacionService;
     private final TipoHabitacionService tipoHabitacionService;
 
-    public HabitacionConsultaController(HabitacionService habitacionService, TipoHabitacionService tipoHabitacionService) {
+    public HabitacionController(HabitacionService habitacionService, TipoHabitacionService tipoHabitacionService) {
         this.habitacionService = habitacionService;
         this.tipoHabitacionService = tipoHabitacionService;
     }
 
-    /**
-     * Verifica disponibilidad de habitaciones en un hotel para un rango de fechas
-     */
     @GetMapping("/disponibles")
     public ResponseEntity<HabitacionDisponibilidadDTO> verificarDisponibilidad(
             @RequestParam Long hotelId,
@@ -50,9 +44,6 @@ public class HabitacionConsultaController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Lista todos los tipos de habitación
-     */
     @GetMapping("/tipos")
     public ResponseEntity<List<TipoHabitacionResponse>> listadoTipoHabitaciones() {
         List<TipoHabitacion> tipos = tipoHabitacionService.listar();
