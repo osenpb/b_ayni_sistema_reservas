@@ -18,6 +18,7 @@ public class CorsConfig {
         configuration.setAllowedOriginPatterns(Arrays.asList(
                 "http://localhost:4200",
                 "http://localhost:5173",
+                "http://localhost:5173",
                 "https://*.netlify.app",
                 "https://*.railway.app"
         ));

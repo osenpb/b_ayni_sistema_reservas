@@ -31,6 +31,18 @@ VALUES (
     '87654321',
     TRUE,
     NOW()
+),
+(
+    'prueba',
+    'prueba@hotel.com',
+    '$2a$12$SB2h5v0y7.SvS/qOSkr2CuT35W39wTQMHy8wO74XTJPR25gBt4uhi',
+    2,
+    '999999123',
+    'Prueba',
+    'Demo',
+    '87654321',
+    TRUE,
+    NOW()
 );
 
 
