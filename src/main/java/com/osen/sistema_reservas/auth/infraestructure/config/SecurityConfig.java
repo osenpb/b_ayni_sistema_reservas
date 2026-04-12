@@ -2,7 +2,6 @@ package com.osen.sistema_reservas.auth.infraestructure.config;
 
 
 import com.osen.sistema_reservas.auth.infraestructure.filters.JwtAuthenticationFilter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.http.HttpMethod;
+
 
 @Configuration
 @EnableWebSecurity
@@ -45,6 +46,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/public/reservas/mias").authenticated()
                         .requestMatchers("/api/public/reservas/{id:[\\d]+}/pagar").authenticated()
                         .requestMatchers("/api/public/reservas/{id:[\\d]+}").authenticated()
+                        // Mercado Pago
+                        .requestMatchers(HttpMethod.POST, "/api/public/payments/webhook").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/public/payments/checkout-api").authenticated()
                         .anyRequest().authenticated()
                 ).addFilterBefore(jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class);;

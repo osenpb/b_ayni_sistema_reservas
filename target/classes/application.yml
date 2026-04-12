@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     defer-datasource-initialization: true
 
   sql:
@@ -27,3 +27,16 @@ application:
     jwt:
       secret-key: ${JWT_SECRET:dev-secret-key-9a8b7c6d5e4f3g2h1i0j9k8l7m6n5o4p}
       expiration: 3600000
+
+mercadopago:
+  access-token: TEST-7991409710727683-040222-5bc62e523c6ead7892a8006d8fe0cdf4-3310339441
+
+app:
+  backend:
+    webhook-url: https://abc123.ngrok-free.app/api/public/payments/webhook
+  frontend:
+    success-url: http://localhost:5173/pago/success
+    failure-url: http://localhost:5173/pago/failure
+    pending-url: http://localhost:5173/pago/pending
+
+
