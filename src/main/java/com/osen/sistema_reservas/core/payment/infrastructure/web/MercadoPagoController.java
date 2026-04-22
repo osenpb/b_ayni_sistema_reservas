@@ -34,11 +34,13 @@ public class MercadoPagoController {
             @RequestHeader(value = "X-Idempotency-Key", required = false) String idempotencyKey,
             @AuthenticationPrincipal User user) {
 
-        if (request.reservaId() == null) {
+        CheckoutApiRequest requestFinal = normalizarRequest(request, user);
+
+        if (requestFinal.reservaId() == null) {
             throw new BusinessException("reservaId es obligatorio", "VALIDATION_ERROR");
         }
 
-        Reserva reserva = reservaService.buscarPorId(request.reservaId());
+        Reserva reserva = reservaService.buscarPorId(requestFinal.reservaId());
         validarPropietario(reserva, user);
 
         if (!"PENDIENTE".equalsIgnoreCase(reserva.getEstado())) {
@@ -49,7 +51,7 @@ public class MercadoPagoController {
                 ? UUID.randomUUID().toString()
                 : idempotencyKey;
 
-        Payment payment = mercadoPagoService.crearPagoCheckoutApi(reserva, request, idemKey);
+        Payment payment = mercadoPagoService.crearPagoCheckoutApi(reserva, requestFinal, idemKey);
 
         return ResponseEntity.ok(new CheckoutApiResponse(
                 payment.getId(),
@@ -86,6 +88,27 @@ public class MercadoPagoController {
         if (reserva.getUser() == null || user == null || !reserva.getUser().getId().equals(user.getId())) {
             throw new ForbiddenException("No tiene permiso sobre esta reserva");
         }
+    }
+
+    private CheckoutApiRequest normalizarRequest(CheckoutApiRequest request, User user) {
+        if (request == null) {
+            return null;
+        }
+
+        String email = request.email();
+        if ((email == null || email.isBlank()) && user != null) {
+            email = user.getEmail();
+        }
+
+        return new CheckoutApiRequest(
+                request.reservaId(),
+                request.token(),
+                request.paymentMethodId(),
+                request.installments(),
+                email,
+                request.docType(),
+                request.docNumber()
+        );
     }
 
     private Long extraerPaymentId(Map<String, Object> body) {

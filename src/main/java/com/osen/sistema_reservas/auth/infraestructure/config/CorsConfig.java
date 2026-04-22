@@ -27,13 +27,14 @@ public class CorsConfig {
                 "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
         ));
 
-        // Headers permitidos
+        // Incluye X-Idempotency-Key para permitir pagos con Checkout API desde navegador
         configuration.setAllowedHeaders(Arrays.asList(
                 "Authorization",
                 "Content-Type",
                 "X-Requested-With",
                 "Accept",
-                "Origin"
+                "Origin",
+                "X-Idempotency-Key"
         ));
         // Permitir credentials (cookies, authorization headers), aunque si es stateless esto podria ser false
         configuration.setAllowCredentials(true);
