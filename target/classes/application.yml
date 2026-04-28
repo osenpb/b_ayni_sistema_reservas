@@ -33,7 +33,11 @@ mercadopago:
 
 app:
   backend:
-    webhook-url: https://abc123.ngrok-free.app/api/public/payments/webhook
+    webhook-url: https://footnote-spleen-revisit.ngrok-free.dev/api/public/payments/webhook
+  payment:
+    mp:
+      create-retries: 2
+      retry-delay-ms: 350
   frontend:
     success-url: http://localhost:5173/pago/success
     failure-url: http://localhost:5173/pago/failure

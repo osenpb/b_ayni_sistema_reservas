@@ -13,6 +13,7 @@ import com.mercadopago.client.payment.PaymentCreateRequest;
 import com.mercadopago.client.payment.PaymentPayerRequest;
 import com.mercadopago.core.MPRequestOptions;
 import java.math.BigDecimal;
+import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,14 @@ public class MercadoPagoService {
     @Value("${app.backend.webhook-url:http://localhost:8080/payments/webhook}")
     private String webhookUrl;
 
+    @Value("${app.payment.mp.create-retries:2}")
+    private int createRetries;
+
+    @Value("${app.payment.mp.retry-delay-ms:350}")
+    private long retryDelayMs;
+
     public Payment crearPagoCheckoutApi(Reserva reserva, CheckoutApiRequest req, String idempotencyKey) {
+        validarReserva(reserva, req);
         validarRequest(req);
 
         String contexto = String.format(
@@ -40,38 +48,71 @@ public class MercadoPagoService {
                 idempotencyKey
         );
 
-        try {
-            PaymentCreateRequest paymentRequest = PaymentCreateRequest.builder()
-                    .transactionAmount(BigDecimal.valueOf(reserva.getTotal()))
-                    .token(req.token())
-                    .description("Pago reserva hotel #" + reserva.getId())
-                    .installments(req.installments())
-                    .paymentMethodId(req.paymentMethodId())
-                    .payer(PaymentPayerRequest.builder()
-                            .email(req.email())
-                            .identification(IdentificationRequest.builder()
-                                    .type(req.docType())
-                                    .number(req.docNumber())
-                                    .build())
-                            .build())
-                    .externalReference(String.valueOf(reserva.getId()))
-                    .notificationUrl(webhookUrl)
-                    .build();
+        PaymentCreateRequest paymentRequest = PaymentCreateRequest.builder()
+                .transactionAmount(BigDecimal.valueOf(reserva.getTotal()))
+                .token(req.token())
+                .description("Pago reserva hotel #" + reserva.getId())
+                .installments(req.installments())
+                .paymentMethodId(req.paymentMethodId())
+                .payer(PaymentPayerRequest.builder()
+                        .email(req.email())
+                        .identification(IdentificationRequest.builder()
+                                .type(req.docType())
+                                .number(req.docNumber())
+                                .build())
+                        .build())
+                .externalReference(String.valueOf(reserva.getId()))
+                .notificationUrl(webhookUrl)
+                .build();
 
-            MPRequestOptions options = MPRequestOptions.builder()
-                    .customHeaders(java.util.Map.of("X-Idempotency-Key", idempotencyKey))
-                    .build();
+        MPRequestOptions options = MPRequestOptions.builder()
+                .customHeaders(java.util.Map.of("X-Idempotency-Key", idempotencyKey))
+                .build();
 
-            return new PaymentClient().create(paymentRequest, options);
+        PaymentClient paymentClient = new PaymentClient();
+        int maxAttempts = Math.max(1, createRetries + 1);
+        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                return paymentClient.create(paymentRequest, options);
+            } catch (MPApiException e) {
+                String mpBody = e.getApiResponse() != null ? e.getApiResponse().getContent() : "sin cuerpo";
+                int status = e.getApiResponse() != null ? e.getApiResponse().getStatusCode() : -1;
+                boolean transitorio = esErrorTransitorio(status, mpBody);
 
-        } catch (MPApiException e) {
-            String mpBody = e.getApiResponse() != null ? e.getApiResponse().getContent() : "sin cuerpo";
-            int status = e.getApiResponse() != null ? e.getApiResponse().getStatusCode() : -1;
-            log.error("Error Mercado Pago al crear pago. status={}, {}, mpResponse={}", status, contexto, mpBody);
-            throw new BusinessException("Error MP: " + mpBody + " | contexto: " + contexto, "MP_PAYMENT_CREATE_ERROR");
-        } catch (MPException e) {
-            log.error("Error general Mercado Pago al crear pago. {}, detalle={}", contexto, e.getMessage());
-            throw new BusinessException("Error general MP: " + e.getMessage(), "MP_PAYMENT_CREATE_ERROR");
+                if (transitorio && attempt < maxAttempts) {
+                    log.warn("Error transitorio Mercado Pago al crear pago. intento={}/{}, status={}, {}, mpResponse={}", attempt, maxAttempts, status, contexto, mpBody);
+                    dormirBackoff();
+                    continue;
+                }
+
+                log.error("Error Mercado Pago al crear pago. intento={}/{}, status={}, {}, mpResponse={}", attempt, maxAttempts, status, contexto, mpBody);
+                throw new BusinessException("Error MP: " + mpBody + " | contexto: " + contexto, "MP_PAYMENT_CREATE_ERROR");
+            } catch (MPException e) {
+                if (attempt < maxAttempts) {
+                    log.warn("Error general MP en intento {}/{}. {}, detalle={}", attempt, maxAttempts, contexto, e.getMessage());
+                    dormirBackoff();
+                    continue;
+                }
+                log.error("Error general Mercado Pago al crear pago. intento={}/{}, {}, detalle={}", attempt, maxAttempts, contexto, e.getMessage());
+                throw new BusinessException("Error general MP: " + e.getMessage(), "MP_PAYMENT_CREATE_ERROR");
+            }
+        }
+
+        throw new BusinessException("No se pudo crear el pago en Mercado Pago", "MP_PAYMENT_CREATE_ERROR");
+    }
+
+    private void validarReserva(Reserva reserva, CheckoutApiRequest req) {
+        if (reserva == null) {
+            throw new BusinessException("La reserva es obligatoria para crear el pago", "VALIDATION_ERROR");
+        }
+        if (reserva.getId() == null) {
+            throw new BusinessException("La reserva no tiene ID", "VALIDATION_ERROR");
+        }
+        if (reserva.getTotal() <= 0) {
+            throw new BusinessException("El monto de la reserva debe ser mayor a 0", "VALIDATION_ERROR");
+        }
+        if (req != null && req.reservaId() != null && !reserva.getId().equals(req.reservaId())) {
+            throw new BusinessException("La reserva del pago no coincide con la reserva seleccionada", "VALIDATION_ERROR");
         }
     }
 
@@ -121,6 +162,27 @@ public class MercadoPagoService {
             return "***" + doc;
         }
         return "***" + doc.substring(len - 4);
+    }
+
+    private boolean esErrorTransitorio(int status, String mpBody) {
+        if (status == 429 || status == 500 || status == 502 || status == 503 || status == 504) {
+            return true;
+        }
+        if (mpBody == null) {
+            return false;
+        }
+        return mpBody.toLowerCase(Locale.ROOT).contains("internal_error");
+    }
+
+    private void dormirBackoff() {
+        if (retryDelayMs <= 0) {
+            return;
+        }
+        try {
+            Thread.sleep(retryDelayMs);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
 
 

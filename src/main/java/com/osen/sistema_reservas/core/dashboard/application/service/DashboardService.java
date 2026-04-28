@@ -54,7 +54,9 @@ public class DashboardService {
 
     private List<ReservaEstadoDTO> calcularReservasPorEstado(List<Reserva> reservas) {
         Map<String, Long> counts = reservas.stream()
-                .collect(Collectors.groupingBy(Reserva::getEstado, Collectors.counting()));
+                .map(Reserva::getEstado)
+                .map(this::normalizarEstado)
+                .collect(Collectors.groupingBy(estado -> estado, Collectors.counting()));
 
         return List.of(
                 new ReservaEstadoDTO("CONFIRMADA", counts.getOrDefault("CONFIRMADA", 0L)),
@@ -65,7 +67,7 @@ public class DashboardService {
 
     private double calcularIngresosTotales(List<Reserva> reservas) {
         return reservas.stream()
-                .filter(r -> "CONFIRMADA".equals(r.getEstado()))
+                .filter(r -> "CONFIRMADA".equals(normalizarEstado(r.getEstado())))
                 .mapToDouble(Reserva::getTotal)
                 .sum();
     }
@@ -89,9 +91,10 @@ public class DashboardService {
 
     private List<ReservaMensualDTO> calcularReservasPorMes(List<Reserva> reservas) {
         Map<YearMonth, Long> countByMonth = reservas.stream()
-                .filter(r -> r.getFechaReserva() != null)
+                .map(this::obtenerFechaDashboard)
+                .filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(
-                        r -> YearMonth.from(r.getFechaReserva()),
+                        YearMonth::from,
                         Collectors.counting()
                 ));
 
@@ -108,11 +111,12 @@ public class DashboardService {
 
     private List<IngresoMensualDTO> calcularIngresosPorMes(List<Reserva> reservas) {
         Map<YearMonth, Double> sumByMonth = reservas.stream()
-                .filter(r -> "CONFIRMADA".equals(r.getEstado()))
-                .filter(r -> r.getFechaReserva() != null)
+                .filter(r -> "CONFIRMADA".equals(normalizarEstado(r.getEstado())))
+                .map(r -> Map.entry(obtenerFechaDashboard(r), r.getTotal()))
+                .filter(entry -> entry.getKey() != null)
                 .collect(Collectors.groupingBy(
-                        r -> YearMonth.from(r.getFechaReserva()),
-                        Collectors.summingDouble(Reserva::getTotal)
+                        entry -> YearMonth.from(entry.getKey()),
+                        Collectors.summingDouble(Map.Entry::getValue)
                 ));
 
         List<IngresoMensualDTO> resultado = new ArrayList<>();
@@ -128,6 +132,23 @@ public class DashboardService {
 
     private String formatMonth(YearMonth mes) {
         return mes.getMonth().toString().substring(0, 3) + " " + mes.getYear();
+    }
+
+    private LocalDate obtenerFechaDashboard(Reserva reserva) {
+        if (reserva == null) {
+            return null;
+        }
+        if (reserva.getFechaReserva() != null) {
+            return reserva.getFechaReserva();
+        }
+        return reserva.getFechaInicio();
+    }
+
+    private String normalizarEstado(String estado) {
+        if (estado == null) {
+            return "";
+        }
+        return estado.trim().toUpperCase(Locale.ROOT);
     }
 
     private List<TopHotelDTO> calcularTopHoteles(List<Reserva> reservas) {

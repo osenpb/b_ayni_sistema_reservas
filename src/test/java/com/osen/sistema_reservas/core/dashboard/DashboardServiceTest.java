@@ -10,6 +10,8 @@ import com.osen.sistema_reservas.core.reserva.application.service.ReservaService
 import com.osen.sistema_reservas.core.reserva.domain.model.Reserva;
 import com.osen.sistema_reservas.core.dashboard.application.service.DashboardService;
 import com.osen.sistema_reservas.core.dashboard.application.dtos.DashboardStatsResponse;
+import com.osen.sistema_reservas.core.dashboard.application.dtos.IngresoMensualDTO;
+import com.osen.sistema_reservas.core.dashboard.application.dtos.ReservaMensualDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,6 +135,28 @@ class DashboardServiceTest {
         }
 
         @Test
+        @DisplayName("Debe normalizar estado para ingresos y conteos")
+        void shouldNormalizeEstadoWhenCalculatingStats() {
+            Reserva confirmadaConFormatoIrregular = DashboardTestFixtures.createReserva(hotel, user);
+            confirmadaConFormatoIrregular.setEstado(" confirmada ");
+            confirmadaConFormatoIrregular.setTotal(450.0);
+
+            when(departamentoService.listar()).thenReturn(departamentos);
+            when(hotelService.listarTodos()).thenReturn(hoteles);
+            when(reservaService.listarTodas()).thenReturn(List.of(confirmadaConFormatoIrregular));
+            when(habitacionService.contarTodas()).thenReturn(10L);
+
+            DashboardStatsResponse stats = dashboardService.obtenerEstadisticas();
+
+            assertEquals(450.0, stats.ingresosTotales());
+            assertEquals(1L, stats.reservasPorEstado().stream()
+                    .filter(r -> "CONFIRMADA".equals(r.estado()))
+                    .findFirst()
+                    .orElseThrow()
+                    .cantidad());
+        }
+
+        @Test
         @DisplayName("Debe calcular hoteles por departamento")
         void shouldCalculateHotelesPorDepartamento() {
             when(departamentoService.listar()).thenReturn(departamentos);
@@ -216,6 +241,29 @@ class DashboardServiceTest {
             when(habitacionService.contarTodas()).thenReturn(10L);
 
             assertDoesNotThrow(() -> dashboardService.obtenerEstadisticas());
+        }
+
+        @Test
+        @DisplayName("Debe usar fechaInicio cuando fechaReserva es null para series mensuales")
+        void shouldUseFechaInicioWhenFechaReservaIsNull() {
+            Reserva reservaSinFechaReserva = DashboardTestFixtures.createReserva(hotel, user);
+            reservaSinFechaReserva.setFechaReserva(null);
+            reservaSinFechaReserva.setFechaInicio(LocalDate.now().minusDays(3));
+            reservaSinFechaReserva.setEstado("CONFIRMADA");
+            reservaSinFechaReserva.setTotal(300.0);
+
+            when(departamentoService.listar()).thenReturn(departamentos);
+            when(hotelService.listarTodos()).thenReturn(hoteles);
+            when(reservaService.listarTodas()).thenReturn(List.of(reservaSinFechaReserva));
+            when(habitacionService.contarTodas()).thenReturn(10L);
+
+            DashboardStatsResponse stats = dashboardService.obtenerEstadisticas();
+
+            long totalReservasMes = stats.reservasPorMes().stream().mapToLong(ReservaMensualDTO::cantidad).sum();
+            double totalIngresosMes = stats.ingresosPorMes().stream().mapToDouble(IngresoMensualDTO::monto).sum();
+
+            assertEquals(1L, totalReservasMes);
+            assertEquals(300.0, totalIngresosMes);
         }
     }
 }

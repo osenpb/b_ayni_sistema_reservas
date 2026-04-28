@@ -29,11 +29,15 @@ application:
       expiration: 3600000
 
 mercadopago:
-  access-token: ${MP_ACCESS_TOKEN}
+  access-token: TEST-7991409710727683-040222-5bc62e523c6ead7892a8006d8fe0cdf4-3310339441
 
 app:
   backend:
-    webhook-url: https://abc123.ngrok-free.app/api/public/payments/webhook
+    webhook-url: https://footnote-spleen-revisit.ngrok-free.dev/api/public/payments/webhook
+  payment:
+    mp:
+      create-retries: 2
+      retry-delay-ms: 350
   frontend:
     success-url: http://localhost:5173/pago/success
     failure-url: http://localhost:5173/pago/failure
