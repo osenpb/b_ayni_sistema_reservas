@@ -5,7 +5,7 @@ import com.osen.sistema_reservas.core.reserva.application.dtos.ReservaListRespon
 import com.osen.sistema_reservas.core.reserva.domain.model.Reserva;
 import com.osen.sistema_reservas.core.reserva.application.service.ReservaService;
 import com.osen.sistema_reservas.shared.helpers.dtos.MessageResponse;
-import com.osen.sistema_reservas.shared.helpers.mappers.ReservaMapper;
+import com.osen.sistema_reservas.core.reserva.application.mappers.ReservaMapper;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

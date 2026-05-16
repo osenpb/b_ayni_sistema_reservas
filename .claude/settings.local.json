@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs grep -l \"@Data\\\\|@Builder\\\\|@AllArgsConstructor\\\\|@NoArgsConstructor\")",
+      "Bash(./mvnw compile *)",
+      "Bash(sed -i 's/import com.osen.sistema_reservas.shared.helpers.mappers.DepartamentoMapper/import com.osen.sistema_reservas.core.departamento.application.mappers.DepartamentoMapper/g' src/main/java/com/osen/sistema_reservas/core/departamento/application/service/DepartamentoService.java src/main/java/com/osen/sistema_reservas/core/departamento/infrastructure/web/DepartamentoAdminController.java src/main/java/com/osen/sistema_reservas/core/hotel/infrastructure/web/HotelPublicController.java)",
+      "Bash(sed -i 's/import com.osen.sistema_reservas.shared.helpers.mappers.HotelMapper/import com.osen.sistema_reservas.core.hotel.application.mappers.HotelMapper/g' src/main/java/com/osen/sistema_reservas/core/hotel/application/service/HotelService.java src/main/java/com/osen/sistema_reservas/core/hotel/infrastructure/web/HotelAdminController.java src/main/java/com/osen/sistema_reservas/core/hotel/infrastructure/web/HotelPublicController.java)",
+      "Bash(sed -i 's/import com.osen.sistema_reservas.shared.helpers.mappers.TipoHabitacionMapper/import com.osen.sistema_reservas.core.tipoHabitacion.application.mappers.TipoHabitacionMapper/g' src/main/java/com/osen/sistema_reservas/core/habitacion/infrastructure/web/HabitacionController.java)",
+      "Bash(sed -i 's/import com.osen.sistema_reservas.shared.helpers.mappers.ReservaMapper/import com.osen.sistema_reservas.core.reserva.application.mappers.ReservaMapper/g' src/main/java/com/osen/sistema_reservas/core/reserva/application/service/ReservaService.java src/main/java/com/osen/sistema_reservas/core/reserva/infrastructure/web/ReservaAdminController.java src/main/java/com/osen/sistema_reservas/core/reserva/infrastructure/web/ReservaPublicController.java)"
+    ]
+  }
+}

@@ -9,17 +9,19 @@ import com.osen.sistema_reservas.core.hotel.application.service.HotelService;
 import com.osen.sistema_reservas.core.reserva.application.dtos.ReservaAdminUpdateDTO;
 import com.osen.sistema_reservas.core.reserva.application.dtos.ReservaListResponse;
 import com.osen.sistema_reservas.core.reserva.application.dtos.ReservaRequest;
+import com.osen.sistema_reservas.core.reserva.domain.model.EstadoReserva;
 import com.osen.sistema_reservas.core.reserva.domain.model.Reserva;
 import com.osen.sistema_reservas.core.reserva.domain.port.out.ReservaRepository;
 import com.osen.sistema_reservas.shared.helpers.exceptions.BusinessException;
 import com.osen.sistema_reservas.shared.helpers.exceptions.ConflictException;
 import com.osen.sistema_reservas.shared.helpers.exceptions.EntityNotFoundException;
 import com.osen.sistema_reservas.shared.helpers.exceptions.ValidationException;
-import com.osen.sistema_reservas.shared.helpers.mappers.ReservaMapper;
+import com.osen.sistema_reservas.core.reserva.application.mappers.ReservaMapper;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -36,8 +38,6 @@ public class ReservaService {
         this.hotelService = hotelService;
         this.habitacionService = habitacionService;
     }
-
-    // ==================== CONSULTAS ====================
 
     @Transactional(readOnly = true)
     public List<ReservaListResponse> listarResponse() {
@@ -91,25 +91,22 @@ public class ReservaService {
             throw new ValidationException("usuario", "Debe estar autenticado para realizar una reserva");
         }
 
-        validarReservaRequest(dto);
-
         Hotel hotel = hotelService.buscarPorId(hotelId);
         validarFechas(dto.fechaInicio(), dto.fechaFin());
 
         List<Habitacion> habitaciones = validarYObtenerHabitaciones(
                 hotel, dto.habitacionesIds(), dto.fechaInicio(), dto.fechaFin());
 
-        long noches = ChronoUnit.DAYS.between(dto.fechaInicio(), dto.fechaFin());
-        double total = calcularTotal(habitaciones, noches);
+        long noches = calcularNoches(dto.fechaInicio(), dto.fechaFin());
+        BigDecimal total = calcularTotal(habitaciones, noches);
 
         Reserva reserva = new Reserva();
-        reserva.setFechaReserva(LocalDate.now());
         reserva.setFechaInicio(dto.fechaInicio());
         reserva.setFechaFin(dto.fechaFin());
         reserva.setUser(user);
         reserva.setHotel(hotel);
         reserva.setTotal(total);
-        reserva.setEstado("PENDIENTE");
+        reserva.setEstado(EstadoReserva.PENDIENTE);
 
         for (Habitacion hab : habitaciones) {
             DetalleReserva det = new DetalleReserva();
@@ -149,13 +146,10 @@ public class ReservaService {
         Reserva reserva = buscarPorId(id);
         validarFechas(fechaInicio, fechaFin);
 
-        long noches = ChronoUnit.DAYS.between(fechaInicio, fechaFin);
-        if (noches <= 0) noches = 1;
-
-        final long nochesFinales = noches;
-        double nuevoTotal = reserva.getDetalles().stream()
-                .mapToDouble(d -> d.getPrecioNoche() * nochesFinales)
-                .sum();
+        long noches = calcularNoches(fechaInicio, fechaFin);
+        BigDecimal nuevoTotal = reserva.getDetalles().stream()
+                .map(d -> d.getPrecioNoche().multiply(BigDecimal.valueOf(noches)))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         reserva.setFechaInicio(fechaInicio);
         reserva.setFechaFin(fechaFin);
@@ -170,30 +164,18 @@ public class ReservaService {
     public Reserva confirmarPago(Long id) {
         Reserva reserva = buscarPorId(id);
 
-        if (!"PENDIENTE".equals(reserva.getEstado())) {
+        if (reserva.getEstado() != EstadoReserva.PENDIENTE) {
             throw new BusinessException(
                     "Solo se pueden confirmar reservas pendientes. Estado actual: " + reserva.getEstado(),
                     "ESTADO_INVALIDO"
             );
         }
 
-        reserva.setEstado("CONFIRMADA");
+        reserva.setEstado(EstadoReserva.CONFIRMADA);
         return reservaRepository.save(reserva);
     }
 
     // ==================== MÉTODOS PRIVADOS ====================
-
-    private void validarReservaRequest(ReservaRequest dto) {
-        if (dto.fechaInicio() == null) {
-            throw new ValidationException("fechaInicio", "La fecha de inicio es requerida");
-        }
-        if (dto.fechaFin() == null) {
-            throw new ValidationException("fechaFin", "La fecha de fin es requerida");
-        }
-        if (dto.habitacionesIds() == null || dto.habitacionesIds().isEmpty()) {
-            throw new ValidationException("habitacionesIds", "Debe seleccionar al menos una habitación");
-        }
-    }
 
     private void validarFechas(LocalDate fechaInicio, LocalDate fechaFin) {
         LocalDate maniana = LocalDate.now().plusDays(1);
@@ -247,19 +229,23 @@ public class ReservaService {
         return habitaciones;
     }
 
-    private double calcularTotal(List<Habitacion> habitaciones, long noches) {
-        if (noches <= 0) noches = 1;
-        final long nochesFinales = noches;
-        return habitaciones.stream().mapToDouble(h -> h.getPrecio() * nochesFinales).sum();
+    private BigDecimal calcularTotal(List<Habitacion> habitaciones, long noches) {
+        return habitaciones.stream()
+                .map(h -> h.getPrecio().multiply(BigDecimal.valueOf(noches)))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private long calcularNoches(LocalDate inicio, LocalDate fin) {
+        long noches = ChronoUnit.DAYS.between(inicio, fin);
+        return noches > 0 ? noches : 1;
     }
 
     private void actualizarHabitacionesReserva(Reserva reserva, ReservaAdminUpdateDTO dto) {
         reserva.getDetalles().clear();
 
-        long noches = ChronoUnit.DAYS.between(dto.fechaInicio(), dto.fechaFin());
-        if (noches <= 0) noches = 1;
+        long noches = calcularNoches(dto.fechaInicio(), dto.fechaFin());
+        BigDecimal total = BigDecimal.ZERO;
 
-        double total = 0;
         for (Long idHab : dto.habitaciones()) {
             Habitacion h = habitacionService.buscarPorId(idHab);
 
@@ -269,7 +255,7 @@ public class ReservaService {
             det.setPrecioNoche(h.getPrecio());
             reserva.getDetalles().add(det);
 
-            total += h.getPrecio() * noches;
+            total = total.add(h.getPrecio().multiply(BigDecimal.valueOf(noches)));
         }
 
         reserva.setTotal(total);

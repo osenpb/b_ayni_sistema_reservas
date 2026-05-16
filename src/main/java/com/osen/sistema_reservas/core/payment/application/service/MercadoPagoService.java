@@ -12,7 +12,7 @@ import com.mercadopago.client.common.IdentificationRequest;
 import com.mercadopago.client.payment.PaymentCreateRequest;
 import com.mercadopago.client.payment.PaymentPayerRequest;
 import com.mercadopago.core.MPRequestOptions;
-import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ public class MercadoPagoService {
 
         try {
             PaymentCreateRequest paymentRequest = PaymentCreateRequest.builder()
-                    .transactionAmount(BigDecimal.valueOf(reserva.getTotal()))
+                    .transactionAmount(reserva.getTotal())
                     .token(req.token())
                     .description("Pago reserva hotel #" + reserva.getId())
                     .installments(req.installments())

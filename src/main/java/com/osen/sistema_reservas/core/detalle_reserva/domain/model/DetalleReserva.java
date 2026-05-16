@@ -3,7 +3,8 @@ package com.osen.sistema_reservas.core.detalle_reserva.domain.model;
 import com.osen.sistema_reservas.core.habitacion.domain.model.Habitacion;
 import com.osen.sistema_reservas.core.reserva.domain.model.Reserva;
 import jakarta.persistence.*;
-import lombok.*;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "detalle_reserva", indexes = {
@@ -16,8 +17,8 @@ public class DetalleReserva {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private double precioNoche;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal precioNoche;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reserva_id", nullable = false)
@@ -29,7 +30,7 @@ public class DetalleReserva {
 
     public DetalleReserva() { }
 
-    public DetalleReserva(Long id, double precioNoche, Reserva reserva, Habitacion habitacion) {
+    public DetalleReserva(Long id, BigDecimal precioNoche, Reserva reserva, Habitacion habitacion) {
         this.id = id;
         this.precioNoche = precioNoche;
         this.reserva = reserva;
@@ -38,8 +39,8 @@ public class DetalleReserva {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    public double getPrecioNoche() { return precioNoche; }
-    public void setPrecioNoche(double precioNoche) { this.precioNoche = precioNoche; }
+    public BigDecimal getPrecioNoche() { return precioNoche; }
+    public void setPrecioNoche(BigDecimal precioNoche) { this.precioNoche = precioNoche; }
     public Reserva getReserva() { return reserva; }
     public void setReserva(Reserva reserva) { this.reserva = reserva; }
     public Habitacion getHabitacion() { return habitacion; }

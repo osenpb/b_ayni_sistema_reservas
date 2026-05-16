@@ -13,7 +13,7 @@ import com.osen.sistema_reservas.core.tipoHabitacion.domain.model.TipoHabitacion
 import com.osen.sistema_reservas.core.tipoHabitacion.application.service.TipoHabitacionService;
 import com.osen.sistema_reservas.shared.helpers.exceptions.EntityNotFoundException;
 import com.osen.sistema_reservas.shared.helpers.exceptions.ValidationException;
-import com.osen.sistema_reservas.shared.helpers.mappers.HotelMapper;
+import com.osen.sistema_reservas.core.hotel.application.mappers.HotelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

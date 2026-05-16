@@ -5,7 +5,7 @@ import com.osen.sistema_reservas.core.habitacion.application.service.HabitacionS
 import com.osen.sistema_reservas.core.tipoHabitacion.application.dtos.TipoHabitacionResponse;
 import com.osen.sistema_reservas.core.tipoHabitacion.domain.model.TipoHabitacion;
 import com.osen.sistema_reservas.core.tipoHabitacion.application.service.TipoHabitacionService;
-import com.osen.sistema_reservas.shared.helpers.mappers.TipoHabitacionMapper;
+import com.osen.sistema_reservas.core.tipoHabitacion.application.mappers.TipoHabitacionMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;

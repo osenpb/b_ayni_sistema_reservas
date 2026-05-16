@@ -1,5 +1,6 @@
 package com.osen.sistema_reservas.core.dashboard.application.dtos;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public record DashboardStatsResponse(
@@ -9,7 +10,7 @@ public record DashboardStatsResponse(
         int totalReservas,
 
         List<ReservaEstadoDTO> reservasPorEstado,
-        double ingresosTotales,
+        BigDecimal ingresosTotales,
 
         List<HotelDepartamentoDTO> hotelesPorDepartamento,
         List<ReservaMensualDTO> reservasPorMes,

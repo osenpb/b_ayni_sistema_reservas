@@ -6,7 +6,7 @@ import com.osen.sistema_reservas.core.reserva.domain.model.Reserva;
 import com.osen.sistema_reservas.core.reserva.application.service.ReservaService;
 import com.osen.sistema_reservas.shared.helpers.dtos.MessageResponse;
 import com.osen.sistema_reservas.shared.helpers.exceptions.ForbiddenException;
-import com.osen.sistema_reservas.shared.helpers.mappers.ReservaMapper;
+import com.osen.sistema_reservas.core.reserva.application.mappers.ReservaMapper;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;

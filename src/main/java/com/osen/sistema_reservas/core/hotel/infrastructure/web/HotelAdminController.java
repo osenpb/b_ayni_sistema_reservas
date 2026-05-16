@@ -5,7 +5,7 @@ import com.osen.sistema_reservas.core.hotel.application.dtos.HotelResponse;
 import com.osen.sistema_reservas.core.hotel.domain.model.Hotel;
 import com.osen.sistema_reservas.core.hotel.application.service.HotelService;
 import com.osen.sistema_reservas.shared.helpers.dtos.MessageResponse;
-import com.osen.sistema_reservas.shared.helpers.mappers.HotelMapper;
+import com.osen.sistema_reservas.core.hotel.application.mappers.HotelMapper;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

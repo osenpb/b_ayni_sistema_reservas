@@ -1,5 +1,6 @@
 package com.osen.sistema_reservas.core.reserva.application.dtos;
 
+import com.osen.sistema_reservas.core.reserva.domain.model.EstadoReserva;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
@@ -14,9 +15,8 @@ public record ReservaAdminUpdateDTO(
         @Future(message = "La fecha de fin debe ser en el futuro")
         LocalDate fechaFin,
 
-        @NotBlank(message = "El estado es requerido")
-        @Pattern(regexp = "^(PENDIENTE|CONFIRMADA|CANCELADA|COMPLETADA)$", message = "Estado no válido")
-        String estado,
+        @NotNull(message = "El estado es requerido")
+        EstadoReserva estado,
 
         @NotNull(message = "El hotel es requerido")
         @Positive(message = "El ID del hotel debe ser positivo")
@@ -24,5 +24,4 @@ public record ReservaAdminUpdateDTO(
 
         @NotEmpty(message = "Debe seleccionar al menos una habitación")
         List<Long> habitaciones
-) {
-}
+) {}

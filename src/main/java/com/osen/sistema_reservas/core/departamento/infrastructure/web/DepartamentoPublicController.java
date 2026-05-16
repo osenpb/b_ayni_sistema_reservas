@@ -33,7 +33,7 @@ public class DepartamentoPublicController {
     @GetMapping("/{id}")
     public ResponseEntity<DepartamentoResponse> obtener(@PathVariable Long id) {
         return ResponseEntity.ok(
-                com.osen.sistema_reservas.shared.helpers.mappers.DepartamentoMapper.toDTO(
+                com.osen.sistema_reservas.core.departamento.application.mappers.DepartamentoMapper.toDTO(
                         departamentoService.buscarPorId(id)));
     }
 }

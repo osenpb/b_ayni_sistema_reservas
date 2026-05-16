@@ -1,21 +1,14 @@
-package com.osen.sistema_reservas.shared.helpers.mappers;
+package com.osen.sistema_reservas.core.habitacion.application.mappers;
 
 import com.osen.sistema_reservas.core.habitacion.application.dtos.HabitacionResponse;
 import com.osen.sistema_reservas.core.habitacion.domain.model.Habitacion;
 
-
-
 public class HabitacionMapper {
 
-    private HabitacionMapper() {
-        throw new UnsupportedOperationException("Esta clase no debe ser instanciada");
-    }
+    private HabitacionMapper() {}
 
     public static HabitacionResponse toDTO(Habitacion habitacion) {
-        if (habitacion == null) {
-            return null;
-        }
-
+        if (habitacion == null) return null;
         return new HabitacionResponse(
                 habitacion.getId(),
                 habitacion.getNumero(),
@@ -27,10 +20,7 @@ public class HabitacionMapper {
     }
 
     public static Habitacion toEntity(HabitacionResponse dto) {
-        if (dto == null) {
-            return null;
-        }
-
+        if (dto == null) return null;
         return Habitacion.builder()
                 .id(dto.id())
                 .numero(dto.numero())

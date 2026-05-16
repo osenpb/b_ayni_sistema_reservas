@@ -20,4 +20,12 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     Optional<Hotel> findByIdWithRelations(@Param("id") Long id);
 
     List<Hotel> findByDepartamentoId(Long departamentoId);
+
+    @Query("""
+            SELECT h.departamento.nombre, COUNT(h)
+            FROM Hotel h
+            WHERE h.departamento IS NOT NULL
+            GROUP BY h.departamento.nombre
+            """)
+    List<Object[]> countGroupByDepartamento();
 }

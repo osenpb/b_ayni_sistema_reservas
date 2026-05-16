@@ -5,6 +5,7 @@ import com.osen.sistema_reservas.auth.domain.model.User;
 import com.osen.sistema_reservas.core.payment.application.service.CheckoutApiRequest;
 import com.osen.sistema_reservas.core.payment.application.service.MercadoPagoService;
 import com.osen.sistema_reservas.core.reserva.application.service.ReservaService;
+import com.osen.sistema_reservas.core.reserva.domain.model.EstadoReserva;
 import com.osen.sistema_reservas.core.reserva.domain.model.Reserva;
 import com.osen.sistema_reservas.shared.helpers.dtos.MessageResponse;
 import com.osen.sistema_reservas.shared.helpers.exceptions.BusinessException;
@@ -43,7 +44,7 @@ public class MercadoPagoController {
         Reserva reserva = reservaService.buscarPorId(requestFinal.reservaId());
         validarPropietario(reserva, user);
 
-        if (!"PENDIENTE".equalsIgnoreCase(reserva.getEstado())) {
+        if (reserva.getEstado() != EstadoReserva.PENDIENTE) {
             throw new BusinessException("Solo se puede pagar una reserva en estado PENDIENTE", "ESTADO_INVALIDO");
         }
 

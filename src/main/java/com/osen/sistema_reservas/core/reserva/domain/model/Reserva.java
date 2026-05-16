@@ -4,8 +4,9 @@ import com.osen.sistema_reservas.auth.domain.model.User;
 import com.osen.sistema_reservas.core.detalle_reserva.domain.model.DetalleReserva;
 import com.osen.sistema_reservas.core.hotel.domain.model.Hotel;
 import jakarta.persistence.*;
-import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,8 @@ public class Reserva {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private LocalDate fechaReserva;
 
     @Column(nullable = false)
@@ -33,11 +35,12 @@ public class Reserva {
     @Column(nullable = false)
     private LocalDate fechaFin;
 
-    @Column(nullable = false)
-    private double total;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal total;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String estado;
+    private EstadoReserva estado;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -57,7 +60,8 @@ public class Reserva {
 
     public Reserva() { }
 
-    public Reserva(Long id, LocalDate fechaReserva, LocalDate fechaInicio, LocalDate fechaFin, double total, String estado, User user, List<DetalleReserva> detalles, Hotel hotel) {
+    public Reserva(Long id, LocalDate fechaReserva, LocalDate fechaInicio, LocalDate fechaFin,
+                   BigDecimal total, EstadoReserva estado, User user, List<DetalleReserva> detalles, Hotel hotel) {
         this.id = id;
         this.fechaReserva = fechaReserva;
         this.fechaInicio = fechaInicio;
@@ -77,10 +81,10 @@ public class Reserva {
     public void setFechaInicio(LocalDate fechaInicio) { this.fechaInicio = fechaInicio; }
     public LocalDate getFechaFin() { return fechaFin; }
     public void setFechaFin(LocalDate fechaFin) { this.fechaFin = fechaFin; }
-    public double getTotal() { return total; }
-    public void setTotal(double total) { this.total = total; }
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
+    public BigDecimal getTotal() { return total; }
+    public void setTotal(BigDecimal total) { this.total = total; }
+    public EstadoReserva getEstado() { return estado; }
+    public void setEstado(EstadoReserva estado) { this.estado = estado; }
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
     public List<DetalleReserva> getDetalles() { return detalles; }

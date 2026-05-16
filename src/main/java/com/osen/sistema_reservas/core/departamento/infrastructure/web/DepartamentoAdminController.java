@@ -5,7 +5,7 @@ import com.osen.sistema_reservas.core.departamento.application.dtos.Departamento
 import com.osen.sistema_reservas.core.departamento.domain.model.Departamento;
 import com.osen.sistema_reservas.core.departamento.application.service.DepartamentoService;
 import com.osen.sistema_reservas.shared.helpers.dtos.MessageResponse;
-import com.osen.sistema_reservas.shared.helpers.mappers.DepartamentoMapper;
+import com.osen.sistema_reservas.core.departamento.application.mappers.DepartamentoMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

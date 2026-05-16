@@ -5,7 +5,7 @@ import com.osen.sistema_reservas.core.departamento.application.dtos.Departamento
 import com.osen.sistema_reservas.core.departamento.domain.model.Departamento;
 import com.osen.sistema_reservas.core.departamento.domain.port.out.DepartamentoRepository;
 import com.osen.sistema_reservas.shared.helpers.exceptions.EntityNotFoundException;
-import com.osen.sistema_reservas.shared.helpers.mappers.DepartamentoMapper;
+import com.osen.sistema_reservas.core.departamento.application.mappers.DepartamentoMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

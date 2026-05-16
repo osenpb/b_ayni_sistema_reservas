@@ -1,4 +1,4 @@
-package com.osen.sistema_reservas.shared.helpers.mappers;
+package com.osen.sistema_reservas.core.tipoHabitacion.application.mappers;
 
 import com.osen.sistema_reservas.core.tipoHabitacion.application.dtos.TipoHabitacionResponse;
 import com.osen.sistema_reservas.core.tipoHabitacion.domain.model.TipoHabitacion;
@@ -7,9 +7,10 @@ import java.util.List;
 
 public class TipoHabitacionMapper {
 
+    private TipoHabitacionMapper() {}
+
     public static TipoHabitacionResponse toDTO(TipoHabitacion tipo) {
         if (tipo == null) return null;
-
         return new TipoHabitacionResponse(
                 tipo.getId(),
                 tipo.getNombre(),
@@ -19,8 +20,6 @@ public class TipoHabitacionMapper {
     }
 
     public static List<TipoHabitacionResponse> toDTOList(List<TipoHabitacion> tipos) {
-        return tipos.stream()
-                .map(TipoHabitacionMapper::toDTO)
-                .toList();
+        return tipos.stream().map(TipoHabitacionMapper::toDTO).toList();
     }
 }

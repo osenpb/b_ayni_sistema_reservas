@@ -6,6 +6,7 @@ import com.osen.sistema_reservas.core.tipoHabitacion.domain.model.TipoHabitacion
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -13,6 +14,10 @@ import java.util.List;
     @Index(name = "idx_habitacion_hotel", columnList = "hotel_id"),
     @Index(name = "idx_habitacion_tipo", columnList = "tipo_id")
 })
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Habitacion {
 
     @Id
@@ -21,11 +26,12 @@ public class Habitacion {
 
     private String numero;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String estado;
+    private EstadoHabitacion estado;
 
-    @Column(nullable = false)
-    private double precio;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal precio;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tipo_id", nullable = false)
@@ -37,58 +43,4 @@ public class Habitacion {
 
     @OneToMany(mappedBy = "habitacion", cascade = CascadeType.ALL)
     private List<DetalleReserva> detalles;
-
-    public Habitacion() {
-    }
-
-    public Habitacion(Long id, String numero, String estado, double precio, TipoHabitacion tipoHabitacion, Hotel hotel, List<DetalleReserva> detalles) {
-        this.id = id;
-        this.numero = numero;
-        this.estado = estado;
-        this.precio = precio;
-        this.tipoHabitacion = tipoHabitacion;
-        this.hotel = hotel;
-        this.detalles = detalles;
-    }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getNumero() { return numero; }
-    public void setNumero(String numero) { this.numero = numero; }
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
-    public double getPrecio() { return precio; }
-    public void setPrecio(double precio) { this.precio = precio; }
-    public TipoHabitacion getTipoHabitacion() { return tipoHabitacion; }
-    public void setTipoHabitacion(TipoHabitacion tipoHabitacion) { this.tipoHabitacion = tipoHabitacion; }
-    public Hotel getHotel() { return hotel; }
-    public void setHotel(Hotel hotel) { this.hotel = hotel; }
-    public List<DetalleReserva> getDetalles() { return detalles; }
-    public void setDetalles(List<DetalleReserva> detalles) { this.detalles = detalles; }
-
-    public static class HabitacionBuilder {
-        private Long id;
-        private String numero;
-        private String estado;
-        private double precio;
-        private TipoHabitacion tipoHabitacion;
-        private Hotel hotel;
-        private List<DetalleReserva> detalles;
-
-        public HabitacionBuilder id(Long id) { this.id = id; return this; }
-        public HabitacionBuilder numero(String numero) { this.numero = numero; return this; }
-        public HabitacionBuilder estado(String estado) { this.estado = estado; return this; }
-        public HabitacionBuilder precio(double precio) { this.precio = precio; return this; }
-        public HabitacionBuilder tipoHabitacion(TipoHabitacion tipoHabitacion) { this.tipoHabitacion = tipoHabitacion; return this; }
-        public HabitacionBuilder hotel(Hotel hotel) { this.hotel = hotel; return this; }
-        public HabitacionBuilder detalles(List<DetalleReserva> detalles) { this.detalles = detalles; return this; }
-
-        public Habitacion build() {
-            return new Habitacion(id, numero, estado, precio, tipoHabitacion, hotel, detalles);
-        }
-    }
-
-    public static HabitacionBuilder builder() {
-        return new HabitacionBuilder();
-    }
 }

@@ -1,6 +1,7 @@
-package com.osen.sistema_reservas.shared.helpers.mappers;
+package com.osen.sistema_reservas.core.reserva.application.mappers;
 
 import com.osen.sistema_reservas.auth.domain.model.User;
+import com.osen.sistema_reservas.core.departamento.application.mappers.DepartamentoMapper;
 import com.osen.sistema_reservas.core.detalle_reserva.application.dtos.DetalleReservaResponse;
 import com.osen.sistema_reservas.core.hotel.application.dtos.HotelResponse;
 import com.osen.sistema_reservas.core.reserva.application.dtos.ReservaListResponse;
@@ -8,8 +9,11 @@ import com.osen.sistema_reservas.core.reserva.application.dtos.ReservaResponse;
 import com.osen.sistema_reservas.core.reserva.domain.model.Reserva;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ReservaMapper {
+
+    private ReservaMapper() {}
 
     public static ReservaResponse toDTO(Reserva reserva) {
         List<DetalleReservaResponse> detalles = reserva.getDetalles().stream()
@@ -20,7 +24,6 @@ public class ReservaMapper {
                 ))
                 .toList();
 
-        // Hotel simplificado sin habitaciones para evitar LazyInitializationException
         var hotel = reserva.getHotel();
         HotelResponse hotelResponse = new HotelResponse(
                 hotel.getId(),
@@ -31,14 +34,7 @@ public class ReservaMapper {
                 hotel.getImagenUrl()
         );
 
-        // Usuario datos (de User directamente)
         User user = reserva.getUser();
-        Long usuarioId = user != null ? user.getId() : null;
-        String usuarioNombre = user != null ? (user.getNombre() != null ? user.getNombre() : "") : "";
-        String usuarioApellido = user != null ? (user.getApellido() != null ? user.getApellido() : "") : "";
-        String usuarioEmail = user != null ? (user.getEmail() != null ? user.getEmail() : "") : "";
-        String usuarioDni = user != null ? (user.getDni() != null ? user.getDni() : "") : "";
-
         return new ReservaResponse(
                 reserva.getId(),
                 reserva.getFechaReserva(),
@@ -47,59 +43,51 @@ public class ReservaMapper {
                 reserva.getTotal(),
                 reserva.getEstado(),
                 hotelResponse,
-                usuarioId,
-                usuarioNombre,
-                usuarioApellido,
-                usuarioEmail,
-                usuarioDni,
+                user != null ? user.getId() : null,
+                Optional.ofNullable(user).map(User::getNombre).orElse(""),
+                Optional.ofNullable(user).map(User::getApellido).orElse(""),
+                Optional.ofNullable(user).map(User::getEmail).orElse(""),
+                Optional.ofNullable(user).map(User::getDni).orElse(""),
                 detalles
         );
     }
 
-
     public static ReservaListResponse toListResponse(Reserva reserva) {
-        // Hotel simplificado
         ReservaListResponse.HotelSimple hotelSimple = null;
         if (reserva.getHotel() != null) {
-            ReservaListResponse.DepartamentoSimple depSimple = null;
-            if (reserva.getHotel().getDepartamento() != null) {
-                depSimple = new ReservaListResponse.DepartamentoSimple(
-                        reserva.getHotel().getDepartamento().getId(),
-                        reserva.getHotel().getDepartamento().getNombre()
-                );
-            }
+            var h = reserva.getHotel();
+            ReservaListResponse.DepartamentoSimple depSimple = h.getDepartamento() != null
+                    ? new ReservaListResponse.DepartamentoSimple(h.getDepartamento().getId(), h.getDepartamento().getNombre())
+                    : null;
             hotelSimple = new ReservaListResponse.HotelSimple(
-                    reserva.getHotel().getId(),
-                    reserva.getHotel().getNombre(),
-                    reserva.getHotel().getDireccion() != null ? reserva.getHotel().getDireccion() : "",
+                    h.getId(), h.getNombre(),
+                    h.getDireccion() != null ? h.getDireccion() : "",
                     depSimple
             );
         }
 
-        // Usuario simplificado (de User directamente)
         ReservaListResponse.UsuarioSimple usuarioSimple = null;
         if (reserva.getUser() != null) {
             User u = reserva.getUser();
             usuarioSimple = new ReservaListResponse.UsuarioSimple(
                     u.getId(),
-                    u.getNombre() != null ? u.getNombre() : "",
-                    u.getApellido() != null ? u.getApellido() : "",
-                    u.getEmail() != null ? u.getEmail() : "",
-                    u.getTelefono() != null ? u.getTelefono() : "",
-                    u.getDni() != null ? u.getDni() : ""
+                    Optional.ofNullable(u.getNombre()).orElse(""),
+                    Optional.ofNullable(u.getApellido()).orElse(""),
+                    Optional.ofNullable(u.getEmail()).orElse(""),
+                    Optional.ofNullable(u.getTelefono()).orElse(""),
+                    Optional.ofNullable(u.getDni()).orElse("")
             );
         }
 
-        List<ReservaListResponse.DetalleSimple> detallesSimples = List.of();
-        if (reserva.getDetalles() != null) {
-            detallesSimples = reserva.getDetalles().stream()
-                    .map(det -> new ReservaListResponse.DetalleSimple(
-                            det.getId(),
-                            det.getHabitacion() != null ? det.getHabitacion().getId() : null,
-                            det.getPrecioNoche()
-                    ))
-                    .toList();
-        }
+        List<ReservaListResponse.DetalleSimple> detallesSimples = reserva.getDetalles() != null
+                ? reserva.getDetalles().stream()
+                        .map(det -> new ReservaListResponse.DetalleSimple(
+                                det.getId(),
+                                det.getHabitacion() != null ? det.getHabitacion().getId() : null,
+                                det.getPrecioNoche()
+                        ))
+                        .toList()
+                : List.of();
 
         return new ReservaListResponse(
                 reserva.getId(),
@@ -114,12 +102,7 @@ public class ReservaMapper {
         );
     }
 
-    /**
-     * Convierte una lista de Reservas a lista de ReservaListResponse
-     */
     public static List<ReservaListResponse> toListResponseList(List<Reserva> reservas) {
-        return reservas.stream()
-                .map(ReservaMapper::toListResponse)
-                .toList();
+        return reservas.stream().map(ReservaMapper::toListResponse).toList();
     }
 }

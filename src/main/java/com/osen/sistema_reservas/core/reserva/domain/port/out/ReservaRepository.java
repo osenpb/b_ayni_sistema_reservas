@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -33,4 +34,46 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
                                       @Param("fechaFin") LocalDate fechaFin);
 
     List<Reserva> findByFechaReservaBetween(LocalDate inicio, LocalDate fin);
+
+    @Query("SELECT r.estado, COUNT(r) FROM Reserva r GROUP BY r.estado")
+    List<Object[]> countGroupByEstado();
+
+    @Query("SELECT SUM(r.total) FROM Reserva r WHERE r.estado = 'CONFIRMADA'")
+    BigDecimal sumIngresosTotales();
+
+    @Query("""
+            SELECT YEAR(r.fechaReserva), MONTH(r.fechaReserva), COUNT(r)
+            FROM Reserva r
+            WHERE r.fechaReserva >= :desde
+            GROUP BY YEAR(r.fechaReserva), MONTH(r.fechaReserva)
+            """)
+    List<Object[]> countGroupByMes(@Param("desde") LocalDate desde);
+
+    @Query("""
+            SELECT YEAR(r.fechaReserva), MONTH(r.fechaReserva), COALESCE(SUM(r.total), 0.0)
+            FROM Reserva r
+            WHERE r.estado = 'CONFIRMADA' AND r.fechaReserva >= :desde
+            GROUP BY YEAR(r.fechaReserva), MONTH(r.fechaReserva)
+            """)
+    List<Object[]> sumIngresosGroupByMes(@Param("desde") LocalDate desde);
+
+    @Query("""
+            SELECT r.hotel.nombre, COUNT(r)
+            FROM Reserva r
+            WHERE r.hotel IS NOT NULL
+            GROUP BY r.hotel.nombre
+            ORDER BY COUNT(r) DESC
+            LIMIT 5
+            """)
+    List<Object[]> findTop5HotelesByReservas();
+
+    @Query("""
+            SELECT DISTINCT r FROM Reserva r
+            JOIN FETCH r.user
+            JOIN FETCH r.hotel
+            WHERE r.fechaReserva IS NOT NULL
+            ORDER BY r.fechaReserva DESC
+            LIMIT 5
+            """)
+    List<Reserva> findTop5RecentWithRelations();
 }
